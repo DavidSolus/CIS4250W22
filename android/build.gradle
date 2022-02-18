@@ -1,12 +1,32 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext {
-        buildToolsVersion = "30.0.2"
-        minSdkVersion = 21
-        compileSdkVersion = 30
-        targetSdkVersion = 30
-        ndkVersion = "21.4.7075529"
+    // TODO: Not sure if this is needed or not 
+    // ext {
+    //     buildToolsVersion = "30.0.2"
+    //     minSdkVersion = 21
+    //     compileSdkVersion = 30
+    //     targetSdkVersion = 30
+    //     ndkVersion = "21.4.7075529"
+    // }
+    project.ext {
+        set('react-native', [
+            versions: [
+                // Overriding Build/Android SDK Versions
+                android : [
+                    minSdk    : 21,
+                    targetSdk : 30,
+                    compileSdk: 30,
+                    buildTools: "30.0.2"
+                ],
+
+                // Overriding Library SDK Versions
+                firebase: [
+                    // Override Firebase SDK Version
+                    bom: "29.0.4"
+                ],
+            ],
+        ])
     }
     repositories {
         google()
@@ -14,6 +34,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.2.2")
+        classpath("com.google.gms:google-services:4.3.10")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
