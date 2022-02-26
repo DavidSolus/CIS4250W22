@@ -3,11 +3,16 @@ import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import ResumeScreen from './src/screens/resumes';
 
-function HomeScreen() {
+function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
+      <Button
+        title="Go to Resume"
+        onPress={() => navigation.navigate('Resumes')}
+      />
     </View>
   );
 }
@@ -30,8 +35,9 @@ function OldView() {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Resumes" component={ResumeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
