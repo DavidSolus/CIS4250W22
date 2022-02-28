@@ -20,16 +20,14 @@ function DownloadFile() {
 		if (result.uri) {
 			alert("File " + result.name + " selected"); 
 			let fileName = directory + UUID + result.name;
+
+			// Convert File URI to Blob
 			const response = await fetch(result.uri);
 			const blob = await response.blob();
 
 			// Create a storage reference from our storage service
 			const resumeRef = ref(fbStorage, fileName);
-			const base64 = await FileSystem.readAsStringAsync(result.uri, { encoding: FileSystem.EncodingType.Base64 })
-			const bytes = new Uint8Array(base64);
-			// file = new File(result.uri);
 
-			// const blob = new Blob([JSON.stringify(result, null, 2)], {type : result.mimeType});
 			uploadBytes(resumeRef, blob, 'data_url').then((snapshot) => {
 				console.log('Uploaded a blob or file!');
 			});
