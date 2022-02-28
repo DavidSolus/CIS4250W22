@@ -11,7 +11,8 @@ import { fbStorage } from '../db/server';
 // TODO: Get some sort of ID from user that is logged in and append that to file name
 
 const directory = "Resumes/";
-const UUID = "UUID_NUMBER_"; //TODO maybe change to metadeta
+const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
+const filePath = directory + UUID;
 
 function UploadFile() {
 	let _pickDocument = async () => {
@@ -19,7 +20,7 @@ function UploadFile() {
 		
 		if (result.uri) {
 			alert("File " + result.name + " selected"); 
-			let fileName = directory + UUID + result.name;
+			let fileName = filePath + result.name;
 
 			// Convert File URI to Blob
 			const response = await fetch(result.uri);
@@ -31,7 +32,10 @@ function UploadFile() {
 			uploadBytes(resumeRef, blob, 'data_url').then((snapshot) => {
 				console.log('Uploaded a blob or file!');
 			});
+		} else {
+			alert("Selecting File for Upload - Cancelled or Failed");
 		}
+		
 		console.log(result);
 	}
 
