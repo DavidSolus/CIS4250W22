@@ -13,7 +13,7 @@ import { fbStorage } from '../db/server';
 const directory = "Resumes/";
 const UUID = "UUID_NUMBER_"; //TODO maybe change to metadeta
 
-function DownloadFile() {
+function UploadFile() {
 	let _pickDocument = async () => {
 		let result = await DocumentPicker.getDocumentAsync({});
 		
@@ -51,7 +51,7 @@ function ResumeScreen({ navigation }) {
         title="Go to Home Screen"
         onPress={() => navigation.navigate('Home')}
       />
-	<DownloadFile/>
+	<UploadFile/>
     </View>
   );
 }
