@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import ResumeScreen from './src/screens/resumes';
+import { ResumeScreen } from './src/screens/resumes';
 
 function HomeScreen({ navigation }) {
   return (
