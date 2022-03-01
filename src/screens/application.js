@@ -10,7 +10,6 @@ function ApplicationScreen({ navigation }) {
         title="Go to Home Screen"
         onPress={() => navigation.navigate('Home')}
       />
-	<UploadFile/>
     </View>
   );
 }

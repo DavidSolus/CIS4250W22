@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HomeScreen } from './src/screens/home';
+import { HomeScreen, MyTabs } from './src/screens/home';
 
 function LoginMock({ navigation }) {
   return (
@@ -37,7 +37,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoginMock">
         <Stack.Screen name="LoginMock" component={LoginMock} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={MyTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );
