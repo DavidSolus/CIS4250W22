@@ -40,13 +40,13 @@ function MyTabs() {
 }
 
 function HomeScreen() {
-    return (
-        <Tab.Navigator>
-            <Tab.Screen name="Application" component={ApplicationScreen} />
-            <Tab.Screen name="Resume" component={ResumeScreen} />
-            <Tab.Screen name="Job" component={JobScreen} />
-        </Tab.Navigator>
-    );
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Application" component={ApplicationScreen} />
+      <Tab.Screen name="Resume" component={ResumeScreen} />
+      <Tab.Screen name="Job" component={JobScreen} />
+    </Tab.Navigator>
+  );
 }
 
 const styles = StyleSheet.create({
