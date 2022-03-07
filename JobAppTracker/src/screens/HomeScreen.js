@@ -13,6 +13,7 @@ const HomeScreen = () => {
         signOut(auth).then(() => {
             // Sign-out successful.
                 navigation.replace("Login")
+                console.log(auth.currentUser)
             }).catch((error) => {
             // An error happened.
                 const errorMessage = error.message;

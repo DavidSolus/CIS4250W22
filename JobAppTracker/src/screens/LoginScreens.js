@@ -39,6 +39,7 @@ const LoginScreens = () => {
         createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
         // Signed in 
+            // setUser(user)
             const user = userCredential.user;
             console.log(user.email)
         // ...
@@ -55,6 +56,7 @@ const LoginScreens = () => {
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
         // Signed in 
+            // setUser(user)
             const user = userCredential.user;
             console.log(user.email)
             
@@ -70,9 +72,14 @@ const LoginScreens = () => {
     
     useEffect(()=> {
         // const subscription = props.source.subscribe();
-        auth.onAuthStateChanged((user)=>{
-            navigation.navigate("Home")
+        const unsubscribe = auth.onAuthStateChanged((user)=>{
+            if(user){
+                navigation.replace("Home")
+            }
+            
         })
+
+        return unsubscribe
 
         // return () => {
         //     // Clean up the subscription
@@ -101,7 +108,7 @@ const LoginScreens = () => {
                 Log in to existing Account
             </Button>
             <Button icon="account-box" mode="contained" onPress={handleRegister}>
-                Register
+                Create New Account
             </Button>
 
         </KeyboardAvoidingView>
