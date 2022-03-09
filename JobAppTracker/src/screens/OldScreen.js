@@ -74,7 +74,7 @@ const LoginScreens = () => {
         // const subscription = props.source.subscribe();
         const unsubscribe = auth.onAuthStateChanged((user)=>{
             if(user){
-                navigation.replace("Home")
+                // navigation.replace("Home")
             }
             
         })
