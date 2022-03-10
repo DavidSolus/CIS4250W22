@@ -86,7 +86,7 @@ export const AuthContextProvider = ({children}) => {
             // Sign-out successful.
                 // navigation.replace("Login")
                 // setUser(user)
-                console.log(user)
+                console.log(user.email)
             }).catch((error) => {
             // An error happened.
                 setError(null)

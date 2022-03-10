@@ -3,7 +3,7 @@ import React from 'react'
 import { Ionicons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import JobStatusScreen from '../features/JobStatusScreen';
+import JobStatusScreen from '../features/jobstatus/JobStatusScreen';
 import SettingScreen from '../features/SettingScreen';
 import JobSearchScreen from '../features/JobSearchScreen';
 
