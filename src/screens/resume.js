@@ -3,9 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 // React
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Keyboard } from 'react-native';
 // Project
-import { ref, uploadBytes, list, listAll } from "firebase/storage";
+import { ref, uploadBytes, list, listAll, deleteObject } from "firebase/storage";
 import { fbStorage } from '../db/server';
 
 // TODO: Get some sort of ID from user that is logged in and append that to file name
@@ -85,6 +85,26 @@ async function ListFile() {
 		)
 }
 
+function DeleteFile() {
+	// Create a reference to the file to delete
+	const desertRef = ref(fbStorage, filePath+"colours.pdf");
+
+	// Delete the file
+	deleteObject(desertRef).then(() => {
+		// File deleted successfully
+	}).catch((error) => {
+		// Uh-oh, an error occurred!
+	});
+
+	return (
+		<TextInput
+			style={styles.textInput}
+			placeholder="File name to delete"
+			onBlur={Keyboard.dismiss}
+		/>
+	)
+}
+
 function ResumeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -94,6 +114,7 @@ function ResumeScreen({ navigation }) {
 				onPress={() => ListFile()}
 			/>
 			<UploadFile/>
+			<DeleteFile/>
     </View>
   );
 }
@@ -112,6 +133,18 @@ const styles = StyleSheet.create({
 	TextStyle:{
 		fontSize : 25,
 		 textAlign: 'center'
+	},
+	inputContainer: {
+		paddingTop: 15
+	},
+	textInput: {
+		borderColor: '#CCCCCC',
+		borderTopWidth: 1,
+		borderBottomWidth: 1,
+		height: 50,
+		fontSize: 25,
+		paddingLeft: 20,
+		paddingRight: 20
 	}
 });
 
