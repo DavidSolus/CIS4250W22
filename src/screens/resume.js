@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 // React
 import { StyleSheet, Text, View, Button } from 'react-native';
 // Project
-import { ref, uploadBytes, uploadString } from "firebase/storage";
+import { ref, uploadBytes, list, listAll } from "firebase/storage";
 import { fbStorage } from '../db/server';
 
 // TODO: Get some sort of ID from user that is logged in and append that to file name
@@ -41,21 +41,59 @@ function UploadFile() {
 
 	return (
 		<Button
-			title="Select Document"
+			title="Upload Document"
 			onPress={_pickDocument}
 		/>
 	);
+}
+
+async function ListFile() {
+	// Reference Firebase Container
+	var filesInStorageList = [];
+	const listRef = ref(fbStorage, filePath);
+	console.log("Listing Files");
+
+
+	// List all files in container
+	listAll(listRef)
+		.then((res) => {
+			res.prefixes.forEach((folderRef) => {
+				// All the prefixes under listRef.
+				// You may call listAll() recursively on them.
+				console.log(res);
+			});
+			res.items.forEach((itemRef) => {
+				// All the items under listRef.
+				let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
+				filesInStorageList.push(fileInStorage);
+				console.log(fileInStorage);
+			});
+		}).catch((error) => {
+			// Uh-oh, an error occurred!
+			console.log("ListFile - ERROR");
+		});
+		
+		//TODO: Render the files
+		return (
+			<View style={styles.MainContainer}>
+
+					{ filesInStorageList.map((item, key)=>(
+					<Text key={key} style={styles.TextStyle} onPress={ this.SampleFunction.bind(this, item) } > { item } </Text>)
+					)}
+
+			</View>
+		)
 }
 
 function ResumeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Resume Screen</Text>
-      <Button
-        title="Go to Home Screen"
-        onPress={() => navigation.navigate('Home')}
-      />
-	<UploadFile/>
+			<Button 
+				title="View Resumes"
+				onPress={() => ListFile()}
+			/>
+			<UploadFile/>
     </View>
   );
 }
@@ -67,6 +105,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+	MainContainer: {
+		flex: 1,
+		margin: 10
+	},
+	TextStyle:{
+		fontSize : 25,
+		 textAlign: 'center'
+	}
 });
 
 export { ResumeScreen }
