@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ApplicationScreen } from './application';
 import { ResumeScreen } from './resume';
 import { JobScreen } from './job'
+import { EmailScreen } from './email'
 
 function Home({ navigation }) {
   return (
@@ -23,6 +24,10 @@ function Home({ navigation }) {
         title="Go to Job Screen"
         onPress={() => navigation.navigate('Job')}
       />
+      <Button
+        title="Go to Email Screen"
+        onPress={() => navigation.navigate('Email')}
+      />
     </View>
   );
 }
@@ -35,6 +40,7 @@ function MyTabs() {
       <Tab.Screen name="Application" component={ApplicationScreen} />
       <Tab.Screen name="ResumeScreen" component={ResumeScreen} />
 			<Tab.Screen name="JobScreen" component={JobScreen} />
+      <Tab.Screen name="EmailScreen" component={EmailScreen} />
     </Tab.Navigator>
   );
 }
@@ -45,6 +51,7 @@ function HomeScreen() {
       <Tab.Screen name="Application" component={ApplicationScreen} />
       <Tab.Screen name="Resume" component={ResumeScreen} />
       <Tab.Screen name="Job" component={JobScreen} />
+      <Tab.Screen name="Email" component={EmailScreen} />
     </Tab.Navigator>
   );
 }
