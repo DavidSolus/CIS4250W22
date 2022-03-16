@@ -32,6 +32,7 @@ export const AuthContextProvider = ({children}) => {
     const handleRegister = (email, password, repeatedPassword) =>{
         if(password !== repeatedPassword){
             setError("Password does not match")
+            return;
         }
         createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {

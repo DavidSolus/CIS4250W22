@@ -18,11 +18,13 @@ const LoginScreen = ({navigation}) => {
                 label="Email"
                 uppercase= "false"
                 autoCapitalize='none'
+                style={styles.textField}
                 value={email}
                 onChangeText={text => setEmail(text)} />
             <TextInput
                 label="Password"
                 autoCapitalize='none'
+                style={styles.textField}
                 value={password}
                 onChangeText={text => setPassword(text)} 
                 secureTextEntry/>
@@ -31,7 +33,7 @@ const LoginScreen = ({navigation}) => {
               {error && <Text>{error}</Text>}
             </View>
             
-            <Button icon="lock-outline" mode="contained" onPress={()=> handleLogin(email,password)} >
+            <Button icon="lock-outline" mode="contained" style = {styles.logBtn} onPress={()=> handleLogin(email,password)} >
                 Log in to existing Account
             </Button>
 
@@ -56,11 +58,22 @@ const styles = StyleSheet.create({
     paddingHorizontal:25
   },
   regBtn: {
-    color: "red"
+    color: "red",
+    padding:10,
+    marginTop:10,
+    fontSize:18
 
   },
   regContainer: {
     padding:10
+  },
+  logBtn:{
+    padding:10,
+    marginTop:15,
+  
+  },
+  textField:{
+    marginBottom:10
   }
 
 })

@@ -18,11 +18,13 @@ const RegisterScreen = ({navigation}) => {
                 label="Email"
                 uppercase= "false"
                 autoCapitalize='none'
+                style={styles.textField}
                 value={email}
                 onChangeText={text => setEmail(text)} />
             <TextInput
                 label="Password"
                 autoCapitalize='none'
+                style={styles.textField}
                 value={password}
                 onChangeText={text => setPassword(text)} 
                 secureTextEntry/>
@@ -30,13 +32,14 @@ const RegisterScreen = ({navigation}) => {
             <TextInput
                 label="Password"
                 autoCapitalize='none'
+                style={styles.textField}
                 value={repeatedPassword}
                 onChangeText={text => setRepeatedPassword(text)} 
                 secureTextEntry/>
             <View>
               {error && <Text>{error}</Text>}
             </View>
-            <Button icon="lock-outline" mode="contained" onPress={()=> handleRegister(email, password, repeatedPassword)} >
+            <Button icon="lock-outline" mode="contained" style={styles.btn} onPress={()=> handleRegister(email, password, repeatedPassword)} >
                 Create New Account
             </Button>
 
@@ -59,13 +62,24 @@ const styles = StyleSheet.create({
     flex:1,
     alignContent: "center",
     justifyContent: "center",
-    paddingHorizontal:25
+    paddingHorizontal:25,
+    marginBottom:15
   },
   regBtn: {
-    color: "red"
+    color: "red",
+    padding:10,
+    marginTop:10,
+    fontSize:18
 
+  },
+  btn:{
+    padding:10,
+    marginTop:10
   },
   regContainer: {
     padding:10
+  },
+  textField:{
+    marginBottom:10
   }
 })

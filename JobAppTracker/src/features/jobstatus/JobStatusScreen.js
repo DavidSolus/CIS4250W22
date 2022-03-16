@@ -1,106 +1,86 @@
-import {FlatList, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { addDoc, collection, doc, getDocs } from 'firebase/firestore';
-import { db } from '../../../firebase';
-import { Button, TextInput } from 'react-native-paper';
+import React, { useContext, useRef, useState } from 'react'
+import { Button} from 'react-native-paper';
+import JobStatusAdd from '../../components/JobStatusAdd';
+import { StyleSheet, Text, View, FlatList, Platform,Dimensions,
+  Animated,
+  PanResponder,
+  TouchableOpacity,
+  Easing,
+  KeyboardAvoidingView } from 'react-native'
+
+import { AntDesign } from '@expo/vector-icons';
+import { JobStatusContext } from '../../contexts/JobStatusContext';
+
 
 const JobStatusScreen = () => {
 
-  const [jobs, setJobs] = useState([]);
-  const jobsCollectionRef = collection(db,"jobs") 
+  const {deleteJobStatus, jobDoc} = useContext(JobStatusContext)
 
-  const [newJobs, setNewJobs] = useState([{ companyName:"", jobName:"", status:"", note:"" }])
-  
-  const createNewjobs = async ()=> {
-    await addDoc(jobsCollectionRef, newJobs)
-    console.log(newJobs)
-  }
+  const pan = useRef(new Animated.ValueXY()).current;
 
-  const deleteJobs = async (id)=>{
-    const jobsDoc = doc(db,"jobs", id)
-    // await deleteJobs(jobsDoc)
-    console.log(id)
-  }
-  
-  // const getCompanyName = (usr) =>{
-  //   jobs.map(usr)
-  // }
+  const [swipe, setSwipe] = useState()
 
-  useEffect(()=> {
-    const getJobs = async ()=>{
-      const jobData = await getDocs(jobsCollectionRef)  
-      // console.log(jobData)
-      if(jobs !== null){
-        setJobs(jobData.docs.map((doc)=>({ ...doc.data(), id: doc.id})))
-        console.log(...jobs)  
-      }
-      
-    }
-    getJobs()
-  },[])
-
-  const Item = ({ title, stat }) => (
+  // const [myJobData, setMyJobData] = useState()
+  const Item = ({ job_ID, title, status, jobname, note}) => (
     <View style={styles.item}>
-      <Text style={styles.title}>Company name: {title} , status: {stat}</Text>
+      <View>
+        <Text style={styles.title}>{title}</Text>
+        <Text> Status: {status}</Text>
+        <Text> Position: {jobname} </Text>
+        <Text> Note: {jobname} </Text>
+      </View>
+      <View>
+        <TouchableOpacity
+          style={styles.button}
+          activeOpacity={0.7}
+          onPress={()=> deleteJobStatus(job_ID)}
+        >
+          <Text ><AntDesign name="delete" size={48} color='red'/></Text>
+        </TouchableOpacity>
+      {/* <Button onPress={()=> deleteJobStatus(job_ID)}>{job_ID} </Button> */}
+      </View>
     </View>
   );
 
-  const renderItem = ({ item }) => (
-    <>
-      <Item title={item.companyName} 
-            stat= {item.status}/>
-    </>
-  );
+  const renderItem = ({ item }) => {
+
+    return(
+      <>
+        <Item job_ID={item.id}
+              title = {item.companyName} 
+              status= {item.status}
+              jobname ={item.position}
+              note = {item.note} />
+      </>
+    )
+    
+  }
 
   return (
     <>
       <KeyboardAvoidingView
             behavior='padding'
             style = {styles.container}>
-      {/* <View>
-        <Text>JobStatusScreen</Text>
-        <Text style={styles.jobContainer}>Comany Name:{jobs[1].companyName} and Status: {jobs[1].status} </Text>
-
-      </View> */}
-
-      <FlatList
-      data={jobs}
+          <Animated.FlatList
+      data={jobDoc}
       renderItem={renderItem}
       keyExtractor={item => item.id}
-      />
-      <Text>test: {newJobs.companyName}</Text>
-      <View>
-        <TextInput
-          label="Company Name"
-          uppercase= "false"
-          autoCapitalize='none'
-          value={newJobs.companyName}
-          // onChangeText={(cName)=>setNewJobs({companyName:cName.value})} 
-          onChangeText={text => setNewJobs({...newJobs,companyName:text})}
+      ItemSeparatorComponent={
+        Platform.OS !== 'android' &&
+        (({ highlighted }) => (
+          <View
+            style={[
+              styles.separator,
+              highlighted && { marginLeft: 0 }
+            ]}
           />
-        <TextInput
-          label="Position"
-          uppercase= "false"
-          autoCapitalize='none'
-          value={newJobs.jobName}
-          onChangeText={text => setNewJobs({...newJobs, jobName:text})} />
-        <TextInput
-          label="Status"
-          uppercase= "false"
-          autoCapitalize='none'
-          value={newJobs.status}
-          onChangeText={text => setNewJobs({...newJobs, status:text})} />
-        <TextInput
-          label="Note"
-          uppercase= "false"
-          autoCapitalize='none'
-          value={newJobs.note}
-          onChangeText={text => setNewJobs({...newJobs, note:text})} />
-      </View>
-    <Button onPress={createNewjobs}> Create Status</Button>
-    <Button onPress={() => deleteJobs(jobs[0].id)}>Delete Status</Button>
+        ))
+      }
+      />
 
-    </KeyboardAvoidingView>
+        <JobStatusAdd/>
+    
+      </KeyboardAvoidingView>
     </>
 
   )
@@ -117,6 +97,30 @@ const styles = StyleSheet.create({
     flex:1,
     alignContent: "center",
     justifyContent: "center",
-    paddingHorizontal:25
-}
+    paddingHorizontal:20
+  },
+  title:{
+    fontSize: 24,
+    fontWeight:'700',
+    // backgroundColor:'#'
+  },
+  item:{
+    backgroundColor:'#81f0c7',
+    marginBottom:3,
+    marginTop:5,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    borderRadius:10, 
+    padding:10
+  },
+  button:{
+    alignItems:'flex-end',
+    marginTop:10
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 })
