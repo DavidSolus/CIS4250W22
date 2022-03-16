@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 // React
 import React, { Component } from 'react';
-import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity } from 'react-native';
+import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList } from 'react-native';
 // Project
 import { ref, uploadBytes, list, listAll, deleteObject } from "firebase/storage";
 import { fbStorage } from '../db/server';
@@ -15,12 +15,14 @@ const directory = "Resumes/";
 const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
 const filePath = directory + UUID;
 
+LogBox.ignoreLogs(['Setting a timer for a long period of time'])
+
 class ResumeScreen extends Component {
 
   constructor() {
     super();
 
-    this.state = { valueArray: [], disabled: false }
+    this.state = { valueArray: [], resumeArray: [], disabled: false }
     this.index = 0;
     this.animatedValue = new Animated.Value(0);
   }
@@ -80,6 +82,7 @@ class ResumeScreen extends Component {
           </View>
         </ScrollView>
 
+				<ResumeScreenOld/>
         <TouchableOpacity activeOpacity={0.8} style={styles.buttonDesign} disabled={this.state.disabled} onPress={this.addMore}>
           <Image source={require('../../assets/deleteButton.png')} style={styles.buttonImage} />
         </TouchableOpacity>
@@ -122,41 +125,28 @@ function UploadFile() {
 }
 
 async function ListFile() {
+	console.log("Running ListFile()");
+
 	// Reference Firebase Container
-	var filesInStorageList = [];
+	let filesInStorageList = [];
+	let content = [];
 	const listRef = ref(fbStorage, filePath);
-	console.log("Listing Files");
 
-
-	// List all files in container
-	listAll(listRef)
-		.then((res) => {
-			res.prefixes.forEach((folderRef) => {
-				// All the prefixes under listRef.
-				// You may call listAll() recursively on them.
-				console.log(res);
-			});
-			res.items.forEach((itemRef) => {
-				// All the items under listRef.
-				let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
-				filesInStorageList.push(fileInStorage);
-				console.log(fileInStorage);
-			});
-		}).catch((error) => {
-			// Uh-oh, an error occurred!
-			console.log("ListFile - ERROR");
+	// Get the files from the storage account
+	try {
+		const res = await listAll(listRef);
+		res.items.forEach((itemRef) => {
+			let filesObject = {};
+			let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
+			filesObject["name"] = fileInStorage;
+			filesInStorageList.push(filesObject);
 		});
-		
-		//TODO: Render the files
-		return (
-			<View style={styles.MainContainer}>
-
-					{ filesInStorageList.map((item, key)=>(
-					<Text key={key} style={styles.TextStyle} onPress={ this.SampleFunction.bind(this, item) } > { item } </Text>)
-					)}
-
-			</View>
-		)
+	
+		console.log("..returning Listing Files");
+		return filesInStorageList;
+	} catch (err) {
+		console.log("ListFile() error: " + err);
+	}
 }
 
 function DeleteFile() {
@@ -179,19 +169,34 @@ function DeleteFile() {
 	)
 }
 
-// function ResumeScreen({ navigation }) {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>Resume Screen</Text>
-// 			<Button 
-// 				title="View Resumes"
-// 				onPress={() => ListFile()}
-// 			/>
-// 			<UploadFile/>
-// 			<DeleteFile/>
-//     </View>
-//   );
-// }
+function getData() {
+	try {
+		ListFile()
+		.then((res) => {
+			console.log("Showing Resumes");
+			return <UploadFile/>;
+		});
+	} catch (err) {
+		console.log("getData error: " + err);
+	}
+
+	return <UploadFile/>;
+}
+
+function ResumeScreenOld({ navigation }) {
+	return (
+		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+			<Text>Resume Screen</Text>
+			<Button 
+				title="View Resumes"
+				onPress={() => ListFile()}
+			/>
+			{/* <UploadFile/> */}
+			{/* <DeleteFile/> */}
+			{getData()}
+		</View>
+	);
+}
 
 const styles = StyleSheet.create({
   // container: {
