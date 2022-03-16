@@ -35,11 +35,12 @@ export const JobStatusContextProvider = ({children}) =>{
             // cities.push(doc.data());
             temp.push({...doc.data(), id:doc.id})
             // console.log({...doc.data(), id:doc.id})
+            console.log(doc.id)
             setJobDoc(temp)
         });
         
         })
-        unsubscribe();
+        // unsubscribe();
     
     }
 
@@ -61,7 +62,7 @@ export const JobStatusContextProvider = ({children}) =>{
 
     // useEffect(()=>{
     //     deleteJobStatus()
-    // },[])
+    // },[id])
 
 
     return(

@@ -35,7 +35,7 @@ const JobStatusScreen = () => {
           activeOpacity={0.7}
           onPress={()=> deleteJobStatus(job_ID)}
         >
-          <Text ><AntDesign name="delete" size={48} color='red'/></Text>
+          <AntDesign name="delete" size={48} color='red'/>
         </TouchableOpacity>
       {/* <Button onPress={()=> deleteJobStatus(job_ID)}>{job_ID} </Button> */}
       </View>
