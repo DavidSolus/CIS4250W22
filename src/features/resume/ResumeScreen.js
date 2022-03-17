@@ -12,7 +12,14 @@ const ResumeScreen = () => {
     const directory = "Resumes/";
     const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
     const filePath = directory + UUID;
-    const [resumeArray, setResumeArray] = useState({});
+    const [resumeArray, setResumeArray] = useState([
+			{
+				"name": "colours.pdf",
+			},
+			{
+				"name": "test.txt",
+			},
+		]);
 	useEffect(()=>{
 		getData();
         // ListFile();
