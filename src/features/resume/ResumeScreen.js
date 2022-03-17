@@ -148,8 +148,14 @@ const ResumeScreen = () => {
 		)
 	}
   return (
-    <View>
-      <Text>ResumeScreen</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Resume Screen</Text>
+			<Button 
+				title="View Resumes"
+				onPress={() => ListFile()}
+			/>
+			<UploadFile/>
+			<DeleteFile/>
     </View>
   )
 }
