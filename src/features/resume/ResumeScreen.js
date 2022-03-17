@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Keyboard, SafeAreaView } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react'
 import { deleteObject, listAll, ref, uploadBytes, list } from 'firebase/storage';
 import { storage } from '../../../firebase';
@@ -12,7 +12,7 @@ const ResumeScreen = () => {
     const directory = "Resumes/";
     const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
     const filePath = directory + UUID;
-		const {deleteJobStatus, jobDoc} = useContext(JobStatusContext)
+		const {deleteJobStatus, jobDoc} = useContext(JobStatusContext )
     const [resumeArray, setResumeArray] = useState([
 			{
 				"name": "colours.pdf",
