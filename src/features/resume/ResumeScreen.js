@@ -85,25 +85,25 @@ const ResumeScreen = () => {
         console.log(filesInStorageList)
 	}
 	
-	// const DeleteFile = (name) => {
-	// 	// Create a reference to the file to delete
-	// 	const desertRef = ref(storage, filePath+name);
+	const DeleteFile = (name) => {
+		// Create a reference to the file to delete
+		const desertRef = ref(storage, filePath+name);
 	
-	// 	// Delete the file
-	// 	deleteObject(desertRef).then(() => {
-	// 		// File deleted successfully
-	// 	}).catch((error) => {
-	// 		// Uh-oh, an error occurred!
-	// 	});
+		// Delete the file
+		deleteObject(desertRef).then(() => {
+			// File deleted successfully
+		}).catch((error) => {
+			// Uh-oh, an error occurred!
+		});
 	
-	// 	return (
-	// 		<TextInput
-	// 			style={styles.textInput}
-	// 			placeholder="File name to delete"
-	// 			onBlur={Keyboard.dismiss}
-	// 		/>
-	// 	)
-	// }
+		return (
+			<TextInput
+				style={styles.textInput}
+				placeholder="File name to delete"
+				onBlur={Keyboard.dismiss}
+			/>
+		)
+	}
 
 	const getData = () => {
 		try {
