@@ -2,11 +2,12 @@
 import { StatusBar } from 'expo-status-bar';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
+import { AntDesign } from '@expo/vector-icons';
 // React
 import React, { Component, useState, useEffect } from 'react';
-import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, AntDesign, SafeAreaView } from 'react-native';
+import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, SafeAreaView } from 'react-native';
 // Project
-import { ref, uploadBytes, list, listAll, deleteObject } from "firebase/storage";
+import { ref, uploadBytes, listAll, deleteObject } from "firebase/storage";
 import { fbStorage } from '../db/server';
 
 // TODO: Get some sort of ID from user that is logged in and append that to file name
@@ -19,10 +20,17 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
 const ResumeScreenNew = () => {
 
-	const [resumeArray, setResumeArray] = useState();
-	// useEffect(()=>{
-	// 	getData();
-	// },[])
+	const [resumeArray, setResumeArray] = useState([
+		{
+			"name": "20220301_214015.jpg",
+		},
+		{
+			"name": "Screenshot_20220303-110747_Messages.jpg",
+		},
+	]);
+	useEffect( async () => {
+		// getData();
+	}, []);
 
 	const UploadFile = () => {
 		let _pickDocument = async () => {
@@ -72,6 +80,7 @@ const ResumeScreenNew = () => {
 				let filesObject = {};
 				let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
 				filesObject["name"] = fileInStorage;
+				console.log("ListFile()listAll() " + fileInStorage);
 				filesInStorageList.push(filesObject);
 			});
 		
@@ -102,25 +111,25 @@ const ResumeScreenNew = () => {
 		)
 	}
 
-	Component.componentDidMount = () => {
-		const getData = () => {
-			try {
-				ListFile()
-				.then((resumeArray) => {
-					console.log("Showing Resumes");
-					console.log(resumeArray);
-					setResumeArray({
-						resumeArray
-					});
+	const getData = async () => {
+		try {
+			ListFile()
+			.then((res) => {
+				console.log("Showing Resumes");
+				console.log(res);
+				console.log(res[0].name);
+				console.log(res[1].name);
+				setResumeArray({
+					res
 				});
-			} catch (err) {
-				console.log("getData error: " + err);
-			}
-		};
+			});
+		} catch (err) {
+			console.log("getData error: " + err);
+		}
 	}
 	
 
-	const Item = ({ name }) => {
+	const ItemTest = ({ name }) => (
 		<View style={styles.item}>
 			<View>
 				<Text style={styles.title}>{name}</Text>
@@ -135,25 +144,39 @@ const ResumeScreenNew = () => {
 				</TouchableOpacity>
 			</View>
 		</View>
-	}
 
-	// const renderItem = ({ item }) => {
-	// 	console.log("ITEM OBJECT1: " + item);
-	// 	console.log("ITEM OBKECT2: " + item.name);
-	// 	return(
-	// 		<>
-	// 			<Item name={item.name}/>
-	// 		</>
-	// 	)
-	// }
-	const renderItem = ({ item }) => {<Item item = {item} name={item.name}/>}
+		// <View style={styles.item}>
+		// 	<Text style={styles.title}>{name}</Text>
+		// </View>
+	);
+
+	const renderItem = ({ item }) => <ItemTest name={item.name} />;
 
   return (
 		<View style={styles.container} >
-			<Text>TEST.......</Text>
+			<UploadFile/>
 			<SafeAreaView style={styles.container}>
 				<FlatList data={resumeArray} renderItem={renderItem} keyExtractor={item => item.name} />
 			</SafeAreaView>
+			{/* {resumeArray.map((item, index) => {
+				console.log(resumeArray);
+				return (
+					<View style={styles.item}>
+					<View>
+						<Text style={styles.title}>{item.name}</Text>
+					</View>
+					<View>
+						<TouchableOpacity
+							style={styles.button}
+							activeOpacity={0.7}
+							onPress={()=> DeleteFile(item.name)}
+						>
+						<AntDesign name="delete" size={48} color='red'/>
+						</TouchableOpacity>
+					</View>
+				</View>
+				);
+			})} */}
 		</View>
 	);
 }
@@ -240,4 +263,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { ResumeScreenNew }
+export { ResumeScreenNew };
