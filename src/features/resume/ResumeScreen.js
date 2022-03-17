@@ -12,6 +12,7 @@ const ResumeScreen = () => {
     const directory = "Resumes/";
     const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
     const filePath = directory + UUID;
+		const {deleteJobStatus, jobDoc} = useContext(JobStatusContext)
     const [resumeArray, setResumeArray] = useState([
 			{
 				"name": "colours.pdf",
@@ -130,7 +131,7 @@ const ResumeScreen = () => {
 				<TouchableOpacity
 					style={styles.button}
 					activeOpacity={0.7}
-					onPress={()=> DeleteFile(name)}
+					onPress={()=> deleteJobStatus(name)}
 				>
 				<AntDesign name="delete" size={48} color='red'/>
 				</TouchableOpacity>
@@ -150,6 +151,9 @@ const ResumeScreen = () => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Resume Screen</Text>
+			<SafeAreaView style={styles.container}>
+				<FlatList data={resumeArray} renderItem={renderItem} keyExtractor={item => item.name} />
+			</SafeAreaView>
 			<Button 
 				title="View Resumes"
 				onPress={() => ListFile()}
