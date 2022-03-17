@@ -7,6 +7,7 @@ import JobStatusScreen from '../features/jobstatus/JobStatusScreen';
 import SettingScreen from '../features/SettingScreen';
 import JobSearchScreen from '../features/JobSearchScreen';
 import { JobStatusContextProvider } from '../contexts/JobStatusContext';
+import ResumeScreen from '../features/resume/ResumeScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +29,15 @@ const AppNavigator = () => {
               <FontAwesome5 name="user-graduate" color={color} size={size} />
             ),
           }} />
+        <Tab.Screen 
+        name="Resume" 
+        component={ResumeScreen}
+        options={{
+          tabBarLabel: 'Resume',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="md-newspaper" color={color} size={size} />
+          ),
+        }} />
         <Tab.Screen 
           name="JobSearch" 
           component={JobSearchScreen}
