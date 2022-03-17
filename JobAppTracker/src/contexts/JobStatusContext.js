@@ -31,14 +31,20 @@ export const JobStatusContextProvider = ({children}) =>{
         try{
         const q = query(jobsCollectionRef, where("auth_ID", "==", user.uid))
         const jobData = await getDocs(q)
-        setJobDoc(jobData.docs.map((doc)=>({ ...doc.data(), id: doc.id})))
-        console.log(...jobDoc) 
+
+        // console.log(jobData.docs)    
+        setJobDoc(jobData.docs.map((doc)=>({ ...doc.data(), id: doc.id})))   
 
         } catch(e){
-        alert("Error: ${e.message}")
+        alert("Error: {e.message}", e.message)
         console.error("Error reading document: ", e.message);
         }
     })
+
+    useEffect(()=>{
+        // getJobStatusSnapshot()
+        getJobStatus()
+    },[])
 
     //real time database listner :
     const getJobStatusSnapshot = ()=> {
@@ -60,9 +66,8 @@ export const JobStatusContextProvider = ({children}) =>{
     }
 
     useEffect(()=>{
-        // getJobStatusSnapshot()
-        getJobStatus()
-    },[])
+        getJobStatusSnapshot()
+    },[user, user.uid])
 
     console.log(jobDoc)
     // Delelete Job status
