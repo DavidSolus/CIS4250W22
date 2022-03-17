@@ -152,7 +152,7 @@ const ResumeScreen = () => {
 	}
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Resume Screen</Text>
+      <UploadFile/>
 			<SafeAreaView style={styles.container}>
 				<FlatList data={resumeArray} renderItem={renderItem} keyExtractor={item => item.name} />
 			</SafeAreaView>
@@ -160,8 +160,6 @@ const ResumeScreen = () => {
 				title="View Resumes"
 				onPress={() => ListFile()}
 			/>
-			<UploadFile/>
-			<DeleteFile/>
     </View>
   )
 }
