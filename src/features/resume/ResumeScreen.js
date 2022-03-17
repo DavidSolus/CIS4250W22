@@ -5,6 +5,7 @@ import { storage } from '../../../firebase';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { AuthContext } from '../../contexts/AuthContext';
+import { JobStatusContext } from '../../contexts/JobStatusContext';
 
 const ResumeScreen = () => {
 
