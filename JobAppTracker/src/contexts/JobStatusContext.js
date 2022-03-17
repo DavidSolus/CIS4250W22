@@ -67,7 +67,7 @@ export const JobStatusContextProvider = ({children}) =>{
 
     useEffect(()=>{
         getJobStatusSnapshot()
-    },[user, user.uid])
+    },[])
 
     console.log(jobDoc)
     // Delelete Job status

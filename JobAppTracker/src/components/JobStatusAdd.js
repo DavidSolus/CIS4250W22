@@ -25,7 +25,7 @@ export default function JobStatusAdd() {
           
           /> */}
           {/* <Text>just text</Text> */}
-          <JobStatusForm/>
+          {/* <JobStatusForm/> */}
           </Modal>
         </Portal>
       </Provider>

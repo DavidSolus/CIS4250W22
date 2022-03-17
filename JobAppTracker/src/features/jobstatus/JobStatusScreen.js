@@ -1,6 +1,5 @@
 import React, { useContext, useRef, useState } from 'react'
-import { Button} from 'react-native-paper';
-import JobStatusAdd from '../../components/JobStatusAdd';
+import { Button, FAB} from 'react-native-paper';
 import { StyleSheet, Text, View, FlatList, Platform,Dimensions,
   Animated,
   PanResponder,
@@ -12,7 +11,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { JobStatusContext } from '../../contexts/JobStatusContext';
 
 
-const JobStatusScreen = () => {
+const JobStatusScreen = ({navigation}) => {
 
   const {deleteJobStatus, jobDoc} = useContext(JobStatusContext)
 
@@ -22,7 +21,7 @@ const JobStatusScreen = () => {
 
   // const [myJobData, setMyJobData] = useState()
   const Item = ({ job_ID, title, status, jobname, note}) => (
-    <View style={styles.item}>
+    <><View style={styles.item}>
       <View>
         <Text style={styles.title}>{title}</Text>
         <Text> Status: {status}</Text>
@@ -33,13 +32,15 @@ const JobStatusScreen = () => {
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.7}
-          onPress={()=> deleteJobStatus(job_ID)}
+          onPress={() => deleteJobStatus(job_ID)}
         >
-          <AntDesign name="delete" size={48} color='red'/>
+          <AntDesign name="delete" size={48} color='red' />
         </TouchableOpacity>
-      {/* <Button onPress={()=> deleteJobStatus(job_ID)}>{job_ID} </Button> */}
+        {/* <Button onPress={()=> deleteJobStatus(job_ID)}>{job_ID} </Button> */}
       </View>
     </View>
+    
+    </>
   );
 
   const renderItem = ({ item }) => {
@@ -78,7 +79,10 @@ const JobStatusScreen = () => {
       }
       />
 
-        <JobStatusAdd/>
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={()=>{navigation.replace('JobForm')}} />
     
       </KeyboardAvoidingView>
     </>

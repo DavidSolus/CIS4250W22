@@ -8,6 +8,7 @@ import SettingScreen from '../features/SettingScreen';
 import JobSearchScreen from '../features/JobSearchScreen';
 import { JobStatusContextProvider } from '../contexts/JobStatusContext';
 import ResumeScreen from '../features/resume/ResumeScreen';
+import JobStatusNavigator from './JobStatusNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,11 +19,12 @@ const AppNavigator = () => {
         initialRouteName="JobStatus"
         screenOptions={{
           tabBarActiveTintColor: '#e91e63',
+          headerShown:false
         }}
       >
         <Tab.Screen 
-          name="JobStatus" 
-          component={JobStatusScreen}
+          name="JobStatusNav" 
+          component={JobStatusNavigator}
           options={{
             tabBarLabel: 'Job Status',
             tabBarIcon: ({ color, size }) => (
