@@ -17,6 +17,8 @@ function EmailScreen({ navigation }) {
   const [sendSubject, setSendSubject] = React.useState();
   const [sendBody, setSendBody] = React.useState();
 
+
+  //var arrayEmails = [{"id":"1","from":"ajshields@rogers.com","subject":"test","body":"this is the first email with lots of writing to see if itll go off page"},{"id":"2","from":"ashiel01@uoguelph.ca","subject":"test2","body":"this is the second email, sent from school email"},{"id":"3","from":"ajshields@rogers.com","subject":"hello","body":"hello world, i am alive"}];
   var arrayEmails = [];
 
   async function signInWithGoogleAsync() {
@@ -83,6 +85,8 @@ function EmailScreen({ navigation }) {
       );
     }
   }
+
+  //console.log(jsonArray);
 
   function showUserEmails() {
     if(userInfo) {
