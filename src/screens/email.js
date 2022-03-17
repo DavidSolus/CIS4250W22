@@ -17,6 +17,7 @@ function EmailScreen({ navigation }) {
   const [sendSubject, setSendSubject] = React.useState();
   const [sendBody, setSendBody] = React.useState();
 
+
   //var arrayEmails = [{"id":"1","from":"ajshields@rogers.com","subject":"test","body":"this is the first email with lots of writing to see if itll go off page"},{"id":"2","from":"ashiel01@uoguelph.ca","subject":"test2","body":"this is the second email, sent from school email"},{"id":"3","from":"ajshields@rogers.com","subject":"hello","body":"hello world, i am alive"}];
   var arrayEmails = [];
 
@@ -38,6 +39,7 @@ function EmailScreen({ navigation }) {
     }
   }
 
+  //Get all user data including profile and email api calls
   async function getUserData() {
     //Get user profile data
     let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
@@ -83,6 +85,7 @@ function EmailScreen({ navigation }) {
       );
     }
   }
+
   //console.log(jsonArray);
 
   function showUserEmails() {
@@ -90,40 +93,61 @@ function EmailScreen({ navigation }) {
       if(userEmail) {
         //loop through all email data and pick out important info
         for(var i = 0; i < userEmail.length; i++) {
-          var tempFrom;
-          var tempSubject;
-          for(var j = 0; j < userEmail[i].payload.headers.length; j++) {
-            switch(userEmail[i].payload.headers[j].name) { //checks specific json headers for from and subject values
-              case "From":
-                tempFrom = userEmail[i].payload.headers[j].value;
-                break;
-              case "Subject":
-                tempSubject = userEmail[i].payload.headers[j].value;
-                break;
-              default:
-                break;
+          var checkInInbox = false;
+          for(var j = 0; j < userEmail[i].labelIds.length; j++) { //checks to see if the mail item is in the inbox mailbox
+            if(userEmail[i].labelIds[j] == "INBOX")
+              checkInInbox = true
+          }
+          if(checkInInbox) { //only post email if it is in the inbox mailbox
+            var tempFrom;
+            var tempSubject;
+            for(var j = 0; j < userEmail[i].payload.headers.length; j++) {
+              switch(userEmail[i].payload.headers[j].name) { //checks specific json headers for from and subject values
+                case "From":
+                  tempFrom = userEmail[i].payload.headers[j].value;
+                  break;
+                case "Subject":
+                  tempSubject = userEmail[i].payload.headers[j].value;
+                  break;
+                default:
+                  break;
+              }
             }
+
+            const tempJSON = { //create temp json to add to entire array
+              "id":i,
+              "from":tempFrom,
+              "subject":tempSubject,
+              "body":userEmail[i].snippet.replace('&#39;','\'')
+            }
+            arrayEmails.push(tempJSON);
           }
-          const tempJSON = { //create temp json to add to entire array
-            "id":i,
-            "from":tempFrom,
-            "subject":tempSubject,
-            "body":userEmail[i].snippet
-          }
-          arrayEmails.push(tempJSON);
         }
       }
 
+      //Loop through all emails and set up each email message on the screen with all info
       const getEmails = arrayEmails => {
         let content = [];
         for (let i = 0; i < arrayEmails.length; i++) {
           const item = arrayEmails[i];
-          content.push(<><Text key={item.id} style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+          content.push(<><Text key={item.id} style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
         }
         return content;
       };
       return <View style={styles.emailInfo}>{getEmails(arrayEmails)}</View>;
     }
+  }
+
+  //Used to isolate the email adress from the sender header
+  function getReplyEmailAddress(email) {
+    for(var j = 0; j < email.length; j++) {
+      if(email[j] == '<')
+          var start = j+1;
+        if(email[j] == '>')
+          var end = j;
+    }
+    var replyEmail = email.substring(start, end);
+    return replyEmail;
   }
 
   function sendEmailButton() {
@@ -134,6 +158,7 @@ function EmailScreen({ navigation }) {
     }
   }
 
+  //Send email functionality
   async function sendEmailAsync() {
     let result = await MailComposer.composeAsync({
       recipients: [sendTo],
@@ -191,12 +216,15 @@ const styles = StyleSheet.create({
   },
   buttons: {
     paddingTop: 40,
-    paddingBottom: 20,
+    paddingBottom: 40,
     width: 'auto',
     flex: 2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly'
+  },
+  replyButtons: {
+    paddingTop: 20
   },
   userInfo: {
     paddingTop: 20,
