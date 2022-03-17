@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React, {createContext, useState, useEffect, useContext} from 'react'
 import { db } from '../../firebase';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { AuthContext } from './AuthContext';
 
 export const JobStatusContext = createContext();
@@ -25,6 +25,21 @@ export const JobStatusContextProvider = ({children}) =>{
         }
     }    
 
+    // read data from the collection: only once
+    const getJobStatus = ( async ()=>{
+
+        try{
+        const q = query(jobsCollectionRef, where("auth_ID", "==", user.uid))
+        const jobData = await getDocs(q)
+        setJobDoc(jobData.docs.map((doc)=>({ ...doc.data(), id: doc.id})))
+        console.log(...jobDoc) 
+
+        } catch(e){
+        alert("Error: ${e.message}")
+        console.error("Error reading document: ", e.message);
+        }
+    })
+
     //real time database listner :
     const getJobStatusSnapshot = ()=> {
 
@@ -35,18 +50,19 @@ export const JobStatusContextProvider = ({children}) =>{
             // cities.push(doc.data());
             temp.push({...doc.data(), id:doc.id})
             // console.log({...doc.data(), id:doc.id})
-            console.log(doc.id)
+            // console.log(doc.id)
             setJobDoc(temp)
         });
         
         })
-        // unsubscribe();
+        // return unsubscribe();
     
     }
 
     useEffect(()=>{
-        getJobStatusSnapshot()
-    },[user])
+        // getJobStatusSnapshot()
+        getJobStatus()
+    },[])
 
     console.log(jobDoc)
     // Delelete Job status
