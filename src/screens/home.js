@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { ApplicationScreen } from './application';
 import { ResumeScreen } from './resume';
+import { ResumeScreenNew } from './newresume';
 import { JobScreen } from './job'
 import { EmailScreen } from './email'
 
@@ -38,7 +39,7 @@ function MyTabs() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Application" component={ApplicationScreen} />
-      <Tab.Screen name="ResumeScreen" component={ResumeScreen} />
+      <Tab.Screen name="ResumeScreen" component={ResumeScreenNew} />
 			<Tab.Screen name="JobScreen" component={JobScreen} />
       <Tab.Screen name="EmailScreen" component={EmailScreen} />
     </Tab.Navigator>
@@ -49,7 +50,7 @@ function HomeScreen() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Application" component={ApplicationScreen} />
-      <Tab.Screen name="Resume" component={ResumeScreen} />
+      <Tab.Screen name="Resume" component={ResumeScreenNew} />
       <Tab.Screen name="Job" component={JobScreen} />
       <Tab.Screen name="Email" component={EmailScreen} />
     </Tab.Navigator>

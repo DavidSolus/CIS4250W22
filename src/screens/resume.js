@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 // React
 import React, { Component } from 'react';
-import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList } from 'react-native';
+import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, AntDesign, SafeAreaView } from 'react-native';
 // Project
 import { ref, uploadBytes, list, listAll, deleteObject } from "firebase/storage";
 import { fbStorage } from '../db/server';
@@ -45,6 +45,25 @@ class ResumeScreen extends Component {
     });
   }
 
+	componentDidMount() {
+		const getData = () => {
+			try {
+				ListFile()
+				.then((resumeArray) => {
+					console.log("Showing Resumes");
+					// console.log(resumeArray);
+					this.setState({
+						resumeArray
+					});
+				});
+			} catch (err) {
+				console.log("getData error: " + err);
+			}
+		};
+		getData();
+	}
+
+
   render() {
     const animationValue = this.animatedValue.interpolate(
       {
@@ -72,6 +91,48 @@ class ResumeScreen extends Component {
       }
     });
 
+
+		const Item = ({ name }) => (
+			<View style={styles.item}>
+				<View>
+					<Text style={styles.title}>{name}</Text>
+				</View>
+				<View>
+					<TouchableOpacity
+						style={styles.button}
+						activeOpacity={0.7}
+						onPress={()=> DeleteFile(name)}
+					>
+						<AntDesign name="delete" size={48} color='red'/>
+					</TouchableOpacity>
+				{/* <Button onPress={()=> deleteJobStatus(job_ID)}>{job_ID} </Button> */}
+				</View>
+			</View>
+		);
+
+		const renderItem = ({ item }) => {
+			console.log("renderITEM OBJECT: " + item.name);
+			return(
+				<>
+					<Item name={item.name}/>
+				</>
+			);
+		}
+
+		const newTestResume = () => {
+			console.log("newTESTRUMES running.. OBJECTS ON NEXT LINE----");
+			console.log(this.state.resumeArray);
+			return (
+				<SafeAreaView style={styles.container}>
+					<FlatList
+						data={this.state.resumeArray}
+						renderItem={renderItem}
+						keyExtractor={item => item.name}
+					/>
+				</SafeAreaView>
+			);
+		};
+
     return (
       <View style={styles.container} >
         <ScrollView>
@@ -82,7 +143,8 @@ class ResumeScreen extends Component {
           </View>
         </ScrollView>
 
-				<ResumeScreenOld/>
+				{newTestResume()}
+				{/* <ResumeScreenOld/> */}
         <TouchableOpacity activeOpacity={0.8} style={styles.buttonDesign} disabled={this.state.disabled} onPress={this.addMore}>
           <Image source={require('../../assets/deleteButton.png')} style={styles.buttonImage} />
         </TouchableOpacity>
@@ -149,9 +211,9 @@ async function ListFile() {
 	}
 }
 
-function DeleteFile() {
+function DeleteFile(name) {
 	// Create a reference to the file to delete
-	const desertRef = ref(fbStorage, filePath+"colours.pdf");
+	const desertRef = ref(fbStorage, filePath+name);
 
 	// Delete the file
 	deleteObject(desertRef).then(() => {
@@ -169,42 +231,36 @@ function DeleteFile() {
 	)
 }
 
-function getData() {
-	try {
-		ListFile()
-		.then((res) => {
-			console.log("Showing Resumes");
-			return <UploadFile/>;
-		});
-	} catch (err) {
-		console.log("getData error: " + err);
-	}
+// function getData() {
+// 	try {
+// 		ListFile()
+// 		.then((res) => {
+// 			console.log("Showing Resumes");
+// 			return <UploadFile/>;
+// 		});
+// 	} catch (err) {
+// 		console.log("getData error: " + err);
+// 	}
 
-	return <UploadFile/>;
-}
+// 	return <UploadFile/>;
+// }
 
-function ResumeScreenOld({ navigation }) {
-	return (
-		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-			<Text>Resume Screen</Text>
-			<Button 
-				title="View Resumes"
-				onPress={() => ListFile()}
-			/>
-			{/* <UploadFile/> */}
-			{/* <DeleteFile/> */}
-			{getData()}
-		</View>
-	);
-}
+// function ResumeScreenOld({ navigation }) {
+// 	return (
+// 		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+// 			<Text>Resume Screen</Text>
+// 			<Button 
+// 				title="View Resumes"
+// 				onPress={() => ListFile()}
+// 			/>
+// 			{/* <UploadFile/> */}
+// 			{/* <DeleteFile/> */}
+// 			{/* {getData()} */}
+// 		</View>
+// 	);
+// }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: '#fff',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
 	MainContainer: {
 		flex: 1,
 		margin: 10
@@ -224,9 +280,6 @@ const styles = StyleSheet.create({
 		fontSize: 25,
 		paddingLeft: 20,
 		paddingRight: 20
-	},
-	container: {
-		flex: 1,
 	},
 	viewHolder: {
 		height: 55,
@@ -252,7 +305,41 @@ const styles = StyleSheet.create({
 	buttonImage: {
 		resizeMode: 'contain',
 		width: '100%',
-	}
+	},
+	jobContainer: {
+    fontSize: 18
+
+  },
+  container:{
+    flex:1,
+    alignContent: "center",
+    justifyContent: "center",
+    paddingHorizontal:20
+  },
+  title:{
+    fontSize: 24,
+    fontWeight:'700',
+    // backgroundColor:'#'
+  },
+  item:{
+    backgroundColor:'#81f0c7',
+    marginBottom:3,
+    marginTop:5,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    borderRadius:10, 
+    padding:10
+  },
+  button:{
+    alignItems:'flex-end',
+    marginTop:10
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });
 
 export { ResumeScreen }
