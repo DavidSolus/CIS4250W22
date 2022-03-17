@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, Keyboard } from 'react-native';
+import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, SafeAreaView } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react'
 import { deleteObject, listAll, ref, uploadBytes, list } from 'firebase/storage';
 import { storage } from '../../../firebase';
@@ -6,6 +6,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { AuthContext } from '../../contexts/AuthContext';
 import { JobStatusContext } from '../../contexts/JobStatusContext';
+import { AntDesign } from '@expo/vector-icons';
 
 const ResumeScreen = () => {
 
