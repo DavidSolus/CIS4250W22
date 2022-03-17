@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 // React
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, AntDesign, SafeAreaView } from 'react-native';
 // Project
 import { ref, uploadBytes, list, listAll, deleteObject } from "firebase/storage";
@@ -20,9 +20,9 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 const ResumeScreenNew = () => {
 
 	const [resumeArray, setResumeArray] = useState();
-	useEffect(()=>{
-		getData();
-	},[])
+	// useEffect(()=>{
+	// 	getData();
+	// },[])
 
 	const UploadFile = () => {
 		let _pickDocument = async () => {
@@ -102,23 +102,25 @@ const ResumeScreenNew = () => {
 		)
 	}
 
-	const getData = () => {
-		try {
-			ListFile()
-			.then((resumeArray) => {
-				console.log("Showing Resumes");
-				console.log(resumeArray);
-				setResumeArray({
-					
-					resumeArray
+	Component.componentDidMount = () => {
+		const getData = () => {
+			try {
+				ListFile()
+				.then((resumeArray) => {
+					console.log("Showing Resumes");
+					console.log(resumeArray);
+					setResumeArray({
+						resumeArray
+					});
 				});
-			});
-		} catch (err) {
-			console.log("getData error: " + err);
-		}
-	};
+			} catch (err) {
+				console.log("getData error: " + err);
+			}
+		};
+	}
+	
 
-	const Item = ({ name }) => (
+	const Item = ({ name }) => {
 		<View style={styles.item}>
 			<View>
 				<Text style={styles.title}>{name}</Text>
@@ -133,26 +135,25 @@ const ResumeScreenNew = () => {
 				</TouchableOpacity>
 			</View>
 		</View>
-	);
-
-	const renderItem = ({ item }) => {
-		console.log("ITEM OBJECT1: " + item);
-		console.log("ITEM OBKECT2: " + item.name);
-		return(
-			<>
-				<Item name={item.name}/>
-			</>
-		)
 	}
+
+	// const renderItem = ({ item }) => {
+	// 	console.log("ITEM OBJECT1: " + item);
+	// 	console.log("ITEM OBKECT2: " + item.name);
+	// 	return(
+	// 		<>
+	// 			<Item name={item.name}/>
+	// 		</>
+	// 	)
+	// }
+	const renderItem = ({ item }) => {<Item item = {item} name={item.name}/>}
 
   return (
 		<View style={styles.container} >
 			<Text>TEST.......</Text>
-			<FlatList
-				data={resumeArray}
-				renderItem={renderItem}
-				keyExtractor={item => item.name}
-			/>
+			<SafeAreaView style={styles.container}>
+				<FlatList data={resumeArray} renderItem={renderItem} keyExtractor={item => item.name} />
+			</SafeAreaView>
 		</View>
 	);
 }
