@@ -109,6 +109,9 @@ function ResumeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Resume Screen</Text>
+			<SafeAreaView style={styles.container}>
+				<FlatList data={resumeArray} renderItem={renderItem} keyExtractor={item => item.name} />
+			</SafeAreaView>
 			<Button 
 				title="View Resumes"
 				onPress={() => ListFile()}
