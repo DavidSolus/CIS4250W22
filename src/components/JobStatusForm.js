@@ -8,7 +8,7 @@ import { JobStatusContext } from '../contexts/JobStatusContext';
 
 
 
-const JobStatusForm = () => {
+const JobStatusForm = ({navigation}) => {
 
     const {user} = useContext(AuthContext)
     const {createJobStatus} = useContext(JobStatusContext)
@@ -35,7 +35,7 @@ const JobStatusForm = () => {
                         // mode={'contained'}
                         style={styles.btn}
                         onPress={()=>{
-                            
+                            navigation.replace('JobStatus')
                         }}>
                         Cancel
                     </Button>
@@ -44,6 +44,7 @@ const JobStatusForm = () => {
                         style={styles.btn}
                         onPress={handleSubmit((data) => {
                             createJobStatus(data)
+                            navigation.replace('JobStatus')
                         //   console.log('form data', data);
                         })}>
                         Add
@@ -145,6 +146,12 @@ const JobStatusForm = () => {
 export default JobStatusForm
 
 const styles = StyleSheet.create({
+    container: {
+        flex:0.60,
+        alignContent: "center",
+        justifyContent: "center",
+        paddingHorizontal:25
+      },
     btn:{
         flexDirection:'row-reverse',
         marginRight: 5,

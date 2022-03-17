@@ -8,6 +8,8 @@ import SettingScreen from '../features/SettingScreen';
 import JobSearchScreen from '../features/JobSearchScreen';
 import { JobStatusContextProvider } from '../contexts/JobStatusContext';
 import ResumeScreen from '../features/resume/ResumeScreen';
+import { EmailScreen } from '../screens/email';
+import JobStatusNavigator from './JobStatusNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,14 +17,15 @@ const AppNavigator = () => {
   return (
     <JobStatusContextProvider>
       <Tab.Navigator
-        initialRouteName="JobStatus"
+        initialRouteName="JobStatusNav"
         screenOptions={{
           tabBarActiveTintColor: '#e91e63',
+          headerShown:false
         }}
       >
         <Tab.Screen 
-          name="JobStatus" 
-          component={JobStatusScreen}
+          name="JobStatusNav" 
+          component={JobStatusNavigator}
           options={{
             tabBarLabel: 'Job Status',
             tabBarIcon: ({ color, size }) => (
@@ -45,6 +48,16 @@ const AppNavigator = () => {
             tabBarLabel: 'Job Search',
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="layers-search" color={color} size={size} />
+            ),
+          }} />
+
+        <Tab.Screen 
+          name="EmailSearch" 
+          component={EmailScreen}
+          options={{
+            tabBarLabel: 'Email Search',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="mail" color={color} size={size} />
             ),
           }} />
         <Tab.Screen 

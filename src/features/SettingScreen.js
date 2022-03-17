@@ -10,7 +10,7 @@ const SettingScreen = () => {
     <>
       <View>
         <Text>SettingScreen</Text>
-        <Text>Registered as: {user.email}</Text>
+        <Text style={styles.emailContainer}>Registered as: {user.email}</Text>
 
       </View>
       <Button onPress={()=>{handleLogout(user)}}> Log out</Button> 
@@ -20,4 +20,9 @@ const SettingScreen = () => {
 
 export default SettingScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  emailContainer: {
+    padding:10,
+    fontSize:18
+  }
+})
