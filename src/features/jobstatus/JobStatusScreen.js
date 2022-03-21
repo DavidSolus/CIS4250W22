@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react'
-import { Button} from 'react-native-paper';
+import { Button, FAB} from 'react-native-paper';
 import JobStatusAdd from '../../components/JobStatusAdd';
 import { StyleSheet, Text, View, FlatList, Platform,Dimensions,
   Animated,
@@ -12,7 +12,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { JobStatusContext } from '../../contexts/JobStatusContext';
 
 
-const JobStatusScreen = () => {
+const JobStatusScreen = ({navigation}) => {
 
   const {deleteJobStatus, jobDoc} = useContext(JobStatusContext)
 
@@ -78,7 +78,10 @@ const JobStatusScreen = () => {
       }
       />
 
-        <JobStatusAdd/>
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={()=>{navigation.replace('JobForm')}} />
     
       </KeyboardAvoidingView>
     </>

@@ -2,7 +2,7 @@
 import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Modal, TextInput } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import * as Google from 'expo-google-app-auth';
-import { StatusBar } from 'expo-status-bar';
+// import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import * as MailComposer from 'expo-mail-composer';
 
@@ -190,7 +190,7 @@ function EmailScreen({ navigation }) {
         </View>
         {showUserEmails()}
         <Text>{'\n'}</Text>
-        <StatusBar style="auto" /> 
+        {/* <StatusBar style="auto" />  */}
       </ScrollView>
     </SafeAreaView>
   );
