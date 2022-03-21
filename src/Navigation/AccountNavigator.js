@@ -9,7 +9,11 @@ const Stack = createNativeStackNavigator();
 
 const AccountNavigator = () => {
   return (
+<<<<<<< HEAD
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+=======
+    <Stack.Navigator headerMode = "none">
+>>>>>>> master
         <Stack.Screen name='Login' component={LoginScreen} />
         <Stack.Screen name='Register' component={RegisterScreen} />
     </Stack.Navigator>
