@@ -13,18 +13,20 @@ import { AntDesign } from '@expo/vector-icons';
 const ResumeScreen = () => {
 
     const {user} = useContext(AuthContext);
+	const [filesinStorage, setFilesInStorage] = useState({})
+
     const directory = "Resumes/";
     const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
     const filePath = directory + UUID;
 		const {deleteJobStatus, jobDoc} = useContext(JobStatusContext )
-    const [resumeArray, setResumeArray] = useState([
-			{
-				"name": "colours.pdf",
-			},
-			{
-				"name": "test.txt",
-			},
-		]);
+    // const [resumeArray, setResumeArray] = useState([
+	// 		{
+	// 			"name": "colours.pdf",
+	// 		},
+	// 		{
+	// 			"name": "test.txt",
+	// 		},
+	// 	]);
 	useEffect(()=>{
 		getData();
         // ListFile();
@@ -75,19 +77,22 @@ const ResumeScreen = () => {
 		try {
 			const res = await listAll(listRef);
 			res.items.forEach((itemRef) => {
-				let filesObject = {};
+				// let filesObject = {};
+				let filesObject = []
 				let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
 				filesObject["name"] = fileInStorage;
 				filesInStorageList.push(filesObject);
+				
 			});
 		
 			console.log("..returning Listing Files");
 			return filesInStorageList;
+			console.log(filesinStorage)
 		} catch (err) {
 			console.log("ListFile() error: " + err);
 		}
-        console.log("listfiles somome ")
-        console.log(filesInStorageList)
+        // console.log("listfiles somome ")
+        // console.log(filesInStorageList)
 	}
 	
 	const DeleteFile = (name) => {
@@ -115,9 +120,10 @@ const ResumeScreen = () => {
 			ListFile()
 			.then((resumeArray) => {
 				// console.log("Showing Resumes");
-				console.log(resumeArray);
+				// console.log(resumeArray);
+				setFilesInStorage(resumeArray)
 				// setResumeArray({
-					
+					console.log("item name access:"+ filesinStorage);
 				// 	resumeArray
 				// });
 			});
@@ -126,16 +132,16 @@ const ResumeScreen = () => {
 		}
 	};
 
-	const Item = ({ name }) => (
+	const Item = ({ rName }) => (
 		<View style={styles.item}>
 			<View>
-				<Text style={styles.title}>{name}</Text>
+				<Text style={styles.title}>test: {rName}</Text>
 			</View>
 			<View>
 				<TouchableOpacity
 					style={styles.button}
 					activeOpacity={0.7}
-					onPress={()=> deleteJobStatus(name)}
+					onPress={()=> deleteJobStatus(rName)}
 				>
 				<AntDesign name="delete" size={48} color='red'/>
 				</TouchableOpacity>
@@ -144,28 +150,41 @@ const ResumeScreen = () => {
 	);
 
 	const renderItem = ({ item }) => {
-		console.log("ITEM OBJECT1: " + item);
+		
 		console.log("ITEM OBKECT2: " + item.name);
 		return(
-			<>
-				<Item name={item.name}/>
-			</>
+			
+				<Item rName={item.name}/>
+			
 		)
 	}
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <UploadFile/>
-			<SafeAreaView style={styles.container}>
-				<FlatList data={resumeArray} renderItem={renderItem} keyExtractor={item => item.name} />
-			</SafeAreaView>
-			<Button 
-				title="View Resumes"
-				onPress={() => ListFile()}
-			/>
-    </View>
+	<SafeAreaView style={styles.container}>
+		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+			<UploadFile/>
+			<Text>Testing</Text>
+				
+			<FlatList 
+			data={filesinStorage} 
+			renderItem={renderItem} 
+			keyExtractor={ item => item.name} />
+				
+				{/* <Button 
+					title="View Resumes"
+					onPress={() => ListFile()}
+				/> */}
+		</View>
+	</SafeAreaView>
   )
 }
 
 export default ResumeScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+	container:{
+		flex:1,
+		alignContent: "center",
+		justifyContent: "center",
+		paddingHorizontal:20
+	  },
+})
