@@ -1,55 +1,41 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Alert } from 'react-native';
+import { StatusBar as ExpoStatusBar} from 'expo-status-bar';
+import { SafeAreaView, StyleSheet, Text, View, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthContextProvider } from './src/contexts/AuthContext';
+import { Navigation } from './src/Navigation';
+import { JobStatusContextProvider } from './src/contexts/JobStatusContext';
 
-import { HomeScreen, MyTabs } from './src/screens/home';
 
-function LoginMock({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>LoginMock Screen</Text>
-      <Button
-        title="Go to Home Screen"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-}
 
 const Stack = createNativeStackNavigator();
 
-function OldView() {
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-      <Button
-        title="Press me"
-        onPress={() => Alert.alert('Simple Button pressed')}
-      />
-    </View>
-  )
-}
+    <>
+      <SafeAreaView style={styles.container} >
 
-function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginMock">
-        <Stack.Screen name="LoginMock" component={LoginMock} />
-        <Stack.Screen name="Home" component={MyTabs} />
-      </Stack.Navigator>
-    </NavigationContainer>
+        <AuthContextProvider>
+          
+
+            <Navigation/>
+          {/* </JobStatusContextProvider> */}
+        </AuthContextProvider>
+
+        <ExpoStatusBar style="auto" />
+      </SafeAreaView >
+
+    </>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop:StatusBar.currentHeight,
+    // backgroundColor: 'green',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
 });
-
-export default App;
