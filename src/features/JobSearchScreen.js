@@ -1,16 +1,69 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useCallback, useState, setState } from "react";
+import { Alert, Button, Linking, StyleSheet, View, TextInput } from "react-native";
 
+// Test Values
+const supportedURL = "https://google.com";
+const unsupportedURL = "slack://open?team=123456";
 
-const JobSearchScreen = () => {
+const OpenURLButton = ({ url, children }) => {
+  const handlePress = useCallback(async () => {
+    // Checking if the link is supported for links with custom URL scheme.
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+      // by some browser in the mobile
+      await Linking.openURL(url);
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`);
+    }
+  }, [url]);
+
+  return <Button title={children} onPress={handlePress} />;
+};
+
+const SearchGoogleButton = ({}) => {
+  const [textInputValue, setTextInputValue] = useState("");
+
+  const onPress = (url) => {
+    alert(url);
+  }
+
+  const onChangeText = (text) => {
+    setTextInputValue(text);
+  }
+
   return (
     <View>
-      <Text>JobSearchScreen</Text>
-      
+      <Button
+        onPress={onPress}
+        title={"Search Google"}
+      />
+      <TextInput
+        style={{borderWidth:1}}
+        onChangeText={onChangeText}
+        value={textInputValue}
+      />
     </View>
-  )
+  );
 }
 
-export default JobSearchScreen
+const JobSearchScreen = () => {
 
-const styles = StyleSheet.create({})
+
+  return (
+    <View style={styles.container}>
+      <SearchGoogleButton/>
+      <></>
+      <OpenURLButton url={supportedURL}>Open Supported URL</OpenURLButton>
+      <OpenURLButton url={unsupportedURL}>Open Unsupported URL</OpenURLButton>
+    </View>
+  );
+};
+
+// const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
+
+export default JobSearchScreen;
