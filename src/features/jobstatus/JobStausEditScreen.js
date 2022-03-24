@@ -16,17 +16,24 @@ const JobStausEditScreen = ({navigation, route}) => {
 
     // console.log("testing user:" + user.uid)
     console.log("testing job:" + titleRoute)
-    const somefunc = {
-        id: job_ID_Route ,
-        auth_ID: user.uid,
-        companyName: titleRoute,
-        position: jobnameRoute,
-        status: statusRoute,
-        note: noteRoute,
-    }
+    // const somefunc = {
+    //     id: job_ID_Route ,
+    //     auth_ID: user.uid,
+    //     companyName: titleRoute,
+    //     position: jobnameRoute,
+    //     status: statusRoute,
+    //     note: noteRoute,
+    // }
 
     const {control, setFocus, handleSubmit} = useForm({
-        defaultValues: somefunc,
+        defaultValues: {
+            id: job_ID_Route ,
+            auth_ID: user.uid,
+            companyName: titleRoute,
+            position: jobnameRoute,
+            status: statusRoute,
+            note: noteRoute,
+        },
         mode: 'onChange',
         });
   return (
@@ -149,4 +156,21 @@ const JobStausEditScreen = ({navigation, route}) => {
 
 export default JobStausEditScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        flex:0.60,
+        alignContent: "center",
+        justifyContent: "center",
+        paddingHorizontal:25
+      },
+    btn:{
+        flexDirection:'row-reverse',
+        marginRight: 5,
+        alignItems:'flex-end',
+
+    },
+    btnContainer:{
+        flexDirection:'row',
+        justifyContent:'space-between'
+    }
+})
