@@ -1,9 +1,17 @@
+// PLAN/TODO: 
+// Be able to search google for jobs
+// Be able to search other job API
+// 1. be able to search anything on google
+// 2. be able to search for key words on google (dropdown buttons etc)
+// 3. Be able to use the dropdown buttons to search other sites
+
 import React, { useCallback, useState, setState } from "react";
 import { Alert, Button, Linking, StyleSheet, View, TextInput } from "react-native";
 
 // Test Values
 const supportedURL = "https://google.com";
 const unsupportedURL = "slack://open?team=123456";
+const googleSearchURL = "http://google.com/search?q=";
 
 const OpenURLButton = ({ url, children }) => {
   const handlePress = useCallback(async () => {
@@ -25,8 +33,10 @@ const OpenURLButton = ({ url, children }) => {
 const SearchGoogleButton = ({}) => {
   const [textInputValue, setTextInputValue] = useState("");
 
-  const onPress = (url) => {
-    alert(url);
+  const onPress = async () => {
+    let url = googleSearchURL+textInputValue;
+    alert("Opening " + url);
+    await Linking.openURL(url);
   }
 
   const onChangeText = (text) => {
