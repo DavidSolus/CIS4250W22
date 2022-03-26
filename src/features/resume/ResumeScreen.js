@@ -12,25 +12,17 @@ import { AntDesign } from '@expo/vector-icons';
 
 const ResumeScreen = () => {
 
-    const {user} = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
 	const [filesinStorage, setFilesInStorage] = useState({})
 
-    const directory = "Resumes/";
-    const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
-    const filePath = directory + UUID;
-		const {deleteJobStatus, jobDoc} = useContext(JobStatusContext )
-    // const [resumeArray, setResumeArray] = useState([
-	// 		{
-	// 			"name": "colours.pdf",
-	// 		},
-	// 		{
-	// 			"name": "test.txt",
-	// 		},
-	// 	]);
+	const directory = "Resumes/";
+	const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta
+	const filePath = directory + UUID;
+	const {deleteJobStatus, jobDoc} = useContext(JobStatusContext );
+
 	useEffect(()=>{
 		getData();
-        // ListFile();
-	},[])
+	},[]);
 
 	const UploadFile = () => {
 		let _pickDocument = async () => {
@@ -49,6 +41,7 @@ const ResumeScreen = () => {
                 
 				uploadBytes(resumeRef, blob, 'data_url').then((snapshot) => {
 					console.log('Uploaded a blob or file!');
+					getData();
 				});
 			} else {
 				alert("Selecting File for Upload - Cancelled or Failed");
@@ -77,33 +70,33 @@ const ResumeScreen = () => {
 		try {
 			const res = await listAll(listRef);
 			res.items.forEach((itemRef) => {
-				// let filesObject = {};
 				let filesObject = []
 				let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
 				filesObject["name"] = fileInStorage;
 				filesInStorageList.push(filesObject);
-				
 			});
 		
 			console.log("..returning Listing Files");
-			return filesInStorageList;
 			console.log(filesinStorage)
+			return filesInStorageList;
 		} catch (err) {
 			console.log("ListFile() error: " + err);
 		}
-        // console.log("listfiles somome ")
-        // console.log(filesInStorageList)
 	}
 	
 	const DeleteFile = (name) => {
 		// Create a reference to the file to delete
+		console.log("DELETING: " + name);
 		const desertRef = ref(storage, filePath+name);
 	
 		// Delete the file
 		deleteObject(desertRef).then(() => {
 			// File deleted successfully
+			getData();
+			console.log("File " + name + " deleted successfully");
 		}).catch((error) => {
 			// Uh-oh, an error occurred!
+			console.log("Uh oh! File " + name + " did NOT delete. Error: " + error);
 		});
 	
 		return (
@@ -119,13 +112,8 @@ const ResumeScreen = () => {
 		try {
 			ListFile()
 			.then((resumeArray) => {
-				// console.log("Showing Resumes");
-				// console.log(resumeArray);
 				setFilesInStorage(resumeArray)
-				// setResumeArray({
 					console.log("item name access:"+ filesinStorage);
-				// 	resumeArray
-				// });
 			});
 		} catch (err) {
 			console.log("getData error: " + err);
@@ -141,7 +129,7 @@ const ResumeScreen = () => {
 				<TouchableOpacity
 					style={styles.button}
 					activeOpacity={0.7}
-					onPress={()=> deleteJobStatus(rName)}
+					onPress={()=> DeleteFile(rName)}
 				>
 				<AntDesign name="delete" size={48} color='red'/>
 				</TouchableOpacity>
@@ -152,33 +140,24 @@ const ResumeScreen = () => {
 	const renderItem = ({ item }) => {
 		
 		console.log("ITEM OBKECT2: " + item.name);
-		return(
-			
-				<Item rName={item.name}/>
-			
-		)
+		return <Item rName={item.name}/>;
 	}
+
   return (
-	<SafeAreaView style={styles.container}>
-		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-			<UploadFile/>
-			<Text>Testing</Text>
-				
-			<FlatList 
-			data={filesinStorage} 
-			renderItem={renderItem} 
-			keyExtractor={ item => item.name} />
-				
-				{/* <Button 
-					title="View Resumes"
-					onPress={() => ListFile()}
-				/> */}
-		</View>
-	</SafeAreaView>
-  )
+		<SafeAreaView style={styles.container}>
+			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+				<Text>Testing</Text>
+				<FlatList 
+				data={filesinStorage} 
+				renderItem={renderItem} 
+				keyExtractor={ item => item.name} />
+				<UploadFile/>
+			</View>
+		</SafeAreaView>
+  );
 }
 
-export default ResumeScreen
+export default ResumeScreen;
 
 const styles = StyleSheet.create({
 	container:{
@@ -187,4 +166,4 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		paddingHorizontal:20
 	  },
-})
+});
