@@ -2,13 +2,14 @@
 import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, SafeAreaView } from 'react-native';
 
 import React, { useContext, useEffect, useState } from 'react'
-import { deleteObject, listAll, ref, uploadBytes, list } from 'firebase/storage';
+import { deleteObject, listAll, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../../firebase';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { AuthContext } from '../../contexts/AuthContext';
 import { JobStatusContext } from '../../contexts/JobStatusContext';
 import { AntDesign } from '@expo/vector-icons';
+import { StorageUtility } from '../../Utils/storageUtility';
 
 const ResumeScreen = () => {
 
@@ -29,7 +30,7 @@ const ResumeScreen = () => {
 			let result = await DocumentPicker.getDocumentAsync({});
 			
 			if (result.uri) {
-				alert("File " + result.name + " selected"); 
+				alert("File " + result.name + " selected");
 				let fileName = filePath + result.name;
 	
 				// Convert File URI to Blob
@@ -40,7 +41,7 @@ const ResumeScreen = () => {
 				const resumeRef = ref(storage, fileName);
                 
 				uploadBytes(resumeRef, blob, 'data_url').then((snapshot) => {
-					console.log('Uploaded a blob or file!');
+					console.log('ResumeScreen.js - UploadFile - Uploaded a blob or file!');
 					getData();
 				});
 			} else {
@@ -56,32 +57,6 @@ const ResumeScreen = () => {
 				onPress={_pickDocument}
 			/>
 		);
-	}
-
-	const ListFile = async () => {
-		console.log("Running ListFile()");
-	
-		// Reference Firebase Container
-		let filesInStorageList = [];
-		let content = [];
-		const listRef = ref(storage, filePath);
-	
-		// Get the files from the storage account
-		try {
-			const res = await listAll(listRef);
-			res.items.forEach((itemRef) => {
-				let filesObject = []
-				let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
-				filesObject["name"] = fileInStorage;
-				filesInStorageList.push(filesObject);
-			});
-		
-			console.log("..returning Listing Files");
-			console.log(filesinStorage)
-			return filesInStorageList;
-		} catch (err) {
-			console.log("ListFile() error: " + err);
-		}
 	}
 	
 	const DeleteFile = (name) => {
@@ -108,22 +83,60 @@ const ResumeScreen = () => {
 		)
 	}
 
+	const DownloadFile = (name) => {
+		// Create a reference to the file to delete
+		console.log("DOWNLOADING: " + name);
+		const downRef = ref(storage, filePath+name);
+	
+		// Download the file
+		getDownloadURL(downRef)
+			.then((url) => {
+				// `url` is the download URL for 'images/stars.jpg'
+
+				// This can be downloaded directly:
+				const xhr = new XMLHttpRequest();
+				xhr.responseType = 'blob';
+				xhr.onload = (event) => {
+					const blob = xhr.response;
+				};
+				xhr.open('GET', url);
+				xhr.send();
+
+				// Or inserted into an <img> element
+				const img = document.getElementById('myimg');
+				img.setAttribute('src', url);
+				console.log("ResumeScreen.js - DownloadFile - Done");
+			})
+			.catch((error) => {
+				// Handle any errors
+				console.log("ResumeScreen.js - DownloadFile - Error: " + error);
+			});
+	
+		return (
+			<TextInput
+				style={styles.textInput}
+				placeholder="File name to download"
+				onBlur={Keyboard.dismiss}
+			/>
+		)
+	}
+
 	const getData = () => {
 		try {
-			ListFile()
+			StorageUtility()
 			.then((resumeArray) => {
 				setFilesInStorage(resumeArray)
-					console.log("item name access:"+ filesinStorage);
+					console.log("ResumeScreen.js - getData - Returning: " + JSON.stringify(filesinStorage));
 			});
 		} catch (err) {
-			console.log("getData error: " + err);
+			console.log("ResumeScreen.js - getData - Error: " + err);
 		}
 	};
 
 	const Item = ({ rName }) => (
 		<View style={styles.item}>
 			<View>
-				<Text style={styles.title}>test: {rName}</Text>
+				<Text style={styles.title}>Resume: {rName}</Text>
 			</View>
 			<View>
 				<TouchableOpacity
@@ -134,23 +147,31 @@ const ResumeScreen = () => {
 				<AntDesign name="delete" size={48} color='red'/>
 				</TouchableOpacity>
 			</View>
+			<View>
+				<TouchableOpacity
+					style={styles.button}
+					activeOpacity={0.7}
+					onPress={()=> DownloadFile(rName)}
+				>
+				<AntDesign name="download" size={48} color='blue'/>
+				</TouchableOpacity>
+			</View>
 		</View>
 	);
 
 	const renderItem = ({ item }) => {
-		
-		console.log("ITEM OBKECT2: " + item.name);
+		console.log("ResumeScreen.js - renderItem: " + item.name);
 		return <Item rName={item.name}/>;
 	}
 
   return (
 		<SafeAreaView style={styles.container}>
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-				<Text>Testing</Text>
+				<Text>Resumes</Text>
 				<FlatList 
-				data={filesinStorage} 
-				renderItem={renderItem} 
-				keyExtractor={ item => item.name} />
+					data={filesinStorage} 
+					renderItem={renderItem} 
+					keyExtractor={ item => item.name} />
 				<UploadFile/>
 			</View>
 		</SafeAreaView>
