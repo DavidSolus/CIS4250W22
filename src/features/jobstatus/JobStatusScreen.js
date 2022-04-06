@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react';
 import { Button, FAB} from 'react-native-paper';
 import JobStatusAdd from '../../components/JobStatusAdd';
 import { StyleSheet, Text, View, FlatList, Platform,Dimensions,
@@ -6,7 +6,7 @@ import { StyleSheet, Text, View, FlatList, Platform,Dimensions,
   PanResponder,
   TouchableOpacity,
   Easing,
-  KeyboardAvoidingView } from 'react-native'
+  KeyboardAvoidingView } from 'react-native';
 
 import { AntDesign } from '@expo/vector-icons';
 import { JobStatusContext } from '../../contexts/JobStatusContext';
@@ -14,20 +14,21 @@ import { JobStatusContext } from '../../contexts/JobStatusContext';
 
 const JobStatusScreen = ({navigation}) => {
 
-  const {deleteJobStatus, jobDoc} = useContext(JobStatusContext)
+  const {deleteJobStatus, jobDoc} = useContext(JobStatusContext);
 
   const pan = useRef(new Animated.ValueXY()).current;
 
-  const [swipe, setSwipe] = useState()
+  const [swipe, setSwipe] = useState();
 
   // const [myJobData, setMyJobData] = useState()
-  const Item = ({ job_ID, title, status, jobname, note}) => (
+  const Item = ({ job_ID, title, status, jobname, note, resume}) => (
     <View style={styles.item}>
       <View>
         <Text style={styles.title}>{title}</Text>
         <Text> Status: {status}</Text>
         <Text> Position: {jobname} </Text>
-        <Text> Note: {jobname} </Text>
+        <Text> Note: {note} </Text>
+        <Text> Resume: {resume} </Text>
       </View>
       <View>
         <TouchableOpacity
@@ -37,56 +38,55 @@ const JobStatusScreen = ({navigation}) => {
         >
           <AntDesign name="delete" size={48} color='red'/>
         </TouchableOpacity>
-      {/* <Button onPress={()=> deleteJobStatus(job_ID)}>{job_ID} </Button> */}
       </View>
     </View>
   );
 
   const renderItem = ({ item }) => {
-
     return(
       <>
-        <Item job_ID={item.id}
-              title = {item.companyName} 
-              status= {item.status}
-              jobname ={item.position}
-              note = {item.note} />
+        <Item 
+          job_ID={item.id}
+          title = {item.companyName} 
+          status= {item.status}
+          jobname ={item.position}
+          note = {item.note}
+          resume = {item.resume}
+        />
       </>
-    )
-    
+    );
   }
 
   return (
     <>
       <KeyboardAvoidingView
-            behavior='padding'
-            style = {styles.container}>
-          <Animated.FlatList
-      data={jobDoc}
-      renderItem={renderItem}
-      keyExtractor={item => item.id}
-      ItemSeparatorComponent={
-        Platform.OS !== 'android' &&
-        (({ highlighted }) => (
-          <View
-            style={[
-              styles.separator,
-              highlighted && { marginLeft: 0 }
-            ]}
-          />
-        ))
-      }
-      />
-
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        onPress={()=>{navigation.replace('JobForm')}} />
-    
+        behavior='padding'
+        style = {styles.container}>
+        
+        <Animated.FlatList
+          data={jobDoc}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          ItemSeparatorComponent={
+            Platform.OS !== 'android' &&
+            (({ highlighted }) => (
+              <View
+                style={[
+                  styles.separator,
+                  highlighted && { marginLeft: 0 }
+                ]}
+              />
+            ))
+          }
+        />
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={()=>{navigation.replace('JobForm')}}
+        />
       </KeyboardAvoidingView>
     </>
-
-  )
+  );
 }
 
 export default JobStatusScreen
@@ -126,4 +126,4 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-})
+});
