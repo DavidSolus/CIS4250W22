@@ -7,7 +7,6 @@ const JobSearchScreen = () => {
   return (
     <View>
       <Text>JobSearchScreen</Text>
-      <JobStatusAdd/>
       
     </View>
   )
