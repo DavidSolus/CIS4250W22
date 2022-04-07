@@ -22,7 +22,7 @@ const JobStatusScreen = ({navigation}) => {
   const [swipe, setSwipe] = useState()
 
   // const [myJobData, setMyJobData] = useState()
-  const Item = ({ job_ID, title, status, jobname, note}) => (
+  const Item = ({ job_ID, title, status, jobname, resume, note}) => (
     <View style={styles.item}>
       <Pressable onLongPress = {()=>{
                                       // updateJobStatus(job_ID, title, status, jobname, note)
@@ -36,8 +36,9 @@ const JobStatusScreen = ({navigation}) => {
                                       })
                                           }}>
         <Text style={styles.title}>{title}</Text>
-        <Text> Status: {status}</Text>
         <Text> Position: {jobname} </Text>
+        <Text> Status: {status}</Text>
+        <Text> Resume: {resume} </Text>
         <Text> Note: {note} </Text>
       </Pressable>
       <View>
@@ -61,6 +62,7 @@ const JobStatusScreen = ({navigation}) => {
               title = {item.companyName} 
               status= {item.status}
               jobname ={item.position}
+              resume= {item.resume}
               note = {item.note} />
       </>
     )

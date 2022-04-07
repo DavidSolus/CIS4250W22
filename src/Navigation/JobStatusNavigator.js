@@ -5,6 +5,7 @@ import JobStatusScreen from '../features/jobstatus/JobStatusScreen';
 import JobStatusForm from '../components/JobStatusForm';
 import { JobStatusContextProvider } from '../contexts/JobStatusContext';
 import JobStausEditScreen from '../features/jobstatus/JobStausEditScreen';
+import ResumeSelection from '../components/ResumeSelection'
 
 const JobStatusStack = createNativeStackNavigator();
 
@@ -18,6 +19,8 @@ export default function JobStatusNavigator() {
         <JobStatusStack.Screen name='JobStatus' component={JobStatusScreen} />
         <JobStatusStack.Screen name='JobForm' component={JobStatusForm} />
         <JobStatusStack.Screen name='JobStatusEdit' component={JobStausEditScreen} />
+        <JobStatusStack.Screen name='ResumeSelect' component={ResumeSelection} />
+        
         
     </JobStatusStack.Navigator>
 
