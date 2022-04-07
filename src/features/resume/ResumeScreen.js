@@ -1,6 +1,6 @@
 
-import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, Button, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, SafeAreaView } from 'react-native';
-
+import { AppRegistry, Image, Animated, ScrollView, StyleSheet, Text, View, TextInput, Keyboard, TouchableOpacity, LogBox, FlatList, SafeAreaView } from 'react-native';
+import { FAB} from 'react-native-paper';
 import React, { useContext, useEffect, useState } from 'react'
 import { deleteObject, listAll, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../../firebase';
@@ -52,8 +52,9 @@ const ResumeScreen = () => {
 		}
 	
 		return (
-			<Button
-				title="Upload Document"
+			<FAB
+				style={styles.fab}
+				icon="plus"
 				onPress={_pickDocument}
 			/>
 		);
@@ -136,7 +137,8 @@ const ResumeScreen = () => {
 	const Item = ({ rName }) => (
 		<View style={styles.item}>
 			<View>
-				<Text style={styles.title}>Resume: {rName}</Text>
+				<Text style={styles.title}>Resume: </Text>
+				<Text>{rName}</Text>
 			</View>
 			<View>
 				<TouchableOpacity
@@ -186,5 +188,29 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		justifyContent: "center",
 		paddingHorizontal:20
-	  },
+	},
+	title:{
+    fontSize: 24,
+    fontWeight:'700',
+    // backgroundColor:'#'
+  },
+	item:{
+    backgroundColor:'#81f0c7',
+    marginBottom:3,
+    marginTop:5,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    borderRadius:10, 
+    padding:10
+  },
+	button:{
+    alignItems:'flex-end',
+    marginTop:10
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });
