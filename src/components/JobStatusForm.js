@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView,KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, Text, View, Pressable,KeyboardAvoidingView } from 'react-native'
 import React, { useContext, useState} from 'react'
 import { FormBuilder } from 'react-native-paper-form-builder';
 import { useForm } from 'react-hook-form';
@@ -90,6 +90,10 @@ const JobStatusForm = ({navigation, route}) => {
                 onChangeText={text => setStatus(text)}
                 />
 
+                <Pressable onPress={()=>{
+                    navigation.navigate('ResumeSelect')
+                    console.log("pressed")
+                }}>
                 <TextInput
                 mode="outlined"
                 label="Resume"
@@ -97,11 +101,12 @@ const JobStatusForm = ({navigation, route}) => {
                 autoCapitalize='none'
                 value={resume}
                 editable={false}
-                onPressIn={()=>{
-                    navigation.navigate('ResumeSelect')  
-                }}
+                // onPressIn={()=>{
+                //     navigation.navigate('ResumeSelect')  
+                // }}
             
                 />
+                </Pressable>
 
                 <TextInput
                 mode="outlined"

@@ -8,7 +8,7 @@ import { Button } from 'react-native-paper';
 const ResumeSelection = ({navigation, route}) => {
 
   const {user} = useContext(AuthContext)
-  const {UploadFile, filesinStorage} = useContext(ResumeContext)
+  const {UploadFile, DeleteFile, filesinStorage} = useContext(ResumeContext)
   const [selectedResume, setSelectedResume] = useState()
   // const {resumeSel} = route.params
   console.log(filesinStorage.name)

@@ -99,10 +99,23 @@ export default function ResumeContextProvider({children}) {
         // ListFile();
 	},[])
 
+	const DeleteFile = (name) => {
+		// Create a reference to the file to delete
+		const desertRef = ref(storage, filePath+name);
+	
+		// Delete the file
+		deleteObject(desertRef).then(() => {
+			// File deleted successfully
+		}).catch((error) => {
+			// Uh-oh, an error occurred!
+		});
+	
+	}
+
 
   return (
     <ResumeContext.Provider 
-    value={{ UploadFile, filesinStorage }}>
+    value={{ UploadFile, DeleteFile, filesinStorage }}>
         {children}
     </ResumeContext.Provider>
   )
