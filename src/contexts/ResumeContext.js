@@ -37,6 +37,7 @@ export default function ResumeContextProvider({children}) {
             
             uploadBytes(resumeRef, blob, 'data_url').then((snapshot) => {
                 console.log('Uploaded a blob or file!');
+								getData();
             });
         } else {
             alert("Selecting File for Upload - Cancelled or Failed");
@@ -101,15 +102,26 @@ export default function ResumeContextProvider({children}) {
 
 	const DeleteFile = (name) => {
 		// Create a reference to the file to delete
+		console.log("DELETING: " + name);
 		const desertRef = ref(storage, filePath+name);
 	
 		// Delete the file
 		deleteObject(desertRef).then(() => {
 			// File deleted successfully
+			getData();
+			console.log("File " + name + " deleted successfully");
 		}).catch((error) => {
 			// Uh-oh, an error occurred!
+			console.log("Uh oh! File " + name + " did NOT delete. Error: " + error);
 		});
 	
+		// return (
+		// 	<TextInput
+		// 		style={styles.textInput}
+		// 		placeholder="File name to delete"
+		// 		onBlur={Keyboard.dismiss}
+		// 	/>
+		// )
 	}
 
 
