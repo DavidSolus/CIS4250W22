@@ -9,17 +9,17 @@ const ResumeSelection = ({navigation, route}) => {
 
   const {user} = useContext(AuthContext)
   const {UploadFile, DeleteFile, filesinStorage} = useContext(ResumeContext)
-  const [selectedResume, setSelectedResume] = useState()
+  const [selectedResume, setSelectedResume] = useState('')
   // const {resumeSel} = route.params
   console.log(filesinStorage.name)
   const Item = ({ rName }) => (
     <View style={styles.item}>
 
       <Pressable onPress={()=>{
-        // setSelectedResume(rName)
-        navigation.navigate('JobForm', {rName} )
+        setSelectedResume(rName)
+        // navigation.navigate('JobForm', {rName} )
         
-        console.log("word "+rName)
+        console.log("word "+ selectedResume)
       }} >
       <View>
         <Text style={styles.title}>{rName}</Text>

@@ -31,7 +31,8 @@ const JobStatusScreen = ({navigation}) => {
                                         job_ID_Route:job_ID , 
                                         titleRoute: title, 
                                         statusRoute: status, 
-                                        jobnameRoute: jobname, 
+                                        jobnameRoute: jobname,
+                                        resumeRoute: resume, 
                                         noteRoute: note
                                       })
                                           }}>
