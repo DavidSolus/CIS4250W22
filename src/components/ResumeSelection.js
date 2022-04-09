@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Pressable } from 'react-native'
-import React, {useContext, useState} from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Pressable } from 'react-native';
+import React, {useContext, useState} from 'react';
 import { AntDesign } from '@expo/vector-icons';
-import { ResumeContext } from '../contexts/ResumeContext'
-import { AuthContext } from '../contexts/AuthContext'
+import { ResumeContext } from '../contexts/ResumeContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { Button } from 'react-native-paper';
 
 const ResumeSelection = ({navigation, route}) => {
@@ -25,6 +25,15 @@ const ResumeSelection = ({navigation, route}) => {
         <Text style={styles.title}>{rName}</Text>
       </View>
       </Pressable>
+      <View>
+				<TouchableOpacity
+					// style={styles.button}
+					activeOpacity={0.7}
+					onPress={()=> DeleteFile(rName)}
+				>
+				  <AntDesign name="delete" size={25} color='red'/>
+				</TouchableOpacity>
+			</View>
       
     </View>
 );
@@ -55,7 +64,8 @@ const styles = StyleSheet.create({
     flex:1,
     alignContent: "center",
     justifyContent: "center",
-    paddingHorizontal:25
+    paddingHorizontal:25,
+    paddingVertical:25
   },
   item:{
     backgroundColor:'#81f0c7',
