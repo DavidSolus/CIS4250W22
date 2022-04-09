@@ -1,30 +1,77 @@
-import { StyleSheet, Text, View, ScrollView,KeyboardAvoidingView } from 'react-native'
-import React, { useContext} from 'react'
+import { StyleSheet, Text, View, ScrollView,KeyboardAvoidingView } from 'react-native';
+import React, { useContext, useState, useEffect} from 'react';
 import { FormBuilder } from 'react-native-paper-form-builder';
-import { useForm } from 'react-hook-form';
-import { Button } from 'react-native-paper';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { useForm, Controller } from 'react-hook-form';
+import { Button, TextInput } from 'react-native-paper';
 import { AuthContext } from '../contexts/AuthContext';
 import { JobStatusContext } from '../contexts/JobStatusContext';
+import { StorageUtility } from '../Utils/storageUtility';
 
 
 
 const JobStatusForm = ({navigation}) => {
 
     const {user} = useContext(AuthContext)
-    const {createJobStatus} = useContext(JobStatusContext)
+    const {createJobStatus, resumeList} = useContext(JobStatusContext)
 
     // const navigation = useNavigation();
 
-    const {control, setFocus, handleSubmit} = useForm({
+    const [listOpen, setListOpen] = useState(false);
+    const [resumes, setResumes] = useState();
+    const {control, setFocus, handleSubmit, formState: {errors}} = useForm({
         defaultValues: {
             auth_ID: user.uid,
             companyName: '',
             position: '',
             status: '',
             note: '',
+            resume: '',
         },
         mode: 'onChange',
-        });
+    });
+
+    const listData = [
+        { label: 'Male', value: 'male' },
+        { label: 'Female', value: 'female' },
+        { label: 'Test', value: 'test' },
+        { label: 'xx', value: 'xx' },
+    ];
+
+    // Gets the list of resumes that exist in the database
+    const getResume = () => {
+		try {
+			StorageUtility()
+			.then((resumeArray) => {
+				setResumes(resumeArray)
+					console.log("JobStatusForm: item name access:" + resumes);
+			});
+		} catch (err) {
+			console.log("getData error: " + err);
+		}
+	};
+
+    useEffect(()=>{
+        getResume();
+    }, []);
+
+    const renderDropDown = ({ field: {onChange, value }, item }) => {
+        console.log("JobStatusForm.js - renderDropDown: " + item);
+
+        return (
+            <DropDownPicker
+                style={styles.dropdown}
+                placeholder="Resume"
+                placeholderStyle={styles.dropdownPlaceholder}
+                open={listOpen}
+                setOpen={() => setListOpen(!listOpen)}
+                items={listData}
+                value={value}
+                setValue={(item) => onChange(item())}
+            />
+        );
+    }
+
     return (
         <KeyboardAvoidingView
             behavior='padding'
@@ -50,97 +97,84 @@ const JobStatusForm = ({navigation}) => {
                         Add
                     </Button>
                 </View>
-                <ScrollView contentContainerStyle={styles.scrollViewStyle}>
-                    
-                    <FormBuilder
+                <View>
+                    <Controller
                         control={control}
-                        setFocus={setFocus}
-                        formConfigArray={[
-                            
-                            {
-                                type: 'text',
-                                name: 'companyName',
-                                rules: {
-                                required: {
-                                    value: true,
-                                    message: 'Company name is required',
-                                },
-                                },
-                                textInputProps: {
-                                label: 'Company Name',
-                                },
-                            },
-                            {
-                                type: 'text',
-                                name: 'position',
-                                rules: {
-                                required: {
-                                    value: true,
-                                    message: 'Position is required',
-                                },
-                                },
-                                textInputProps: {
-                                label: 'Position',
-                                
-                                },
-                            },
-                            {
-                                type: 'text',
-                                name: 'status',
-                                rules: {
-                                required: {
-                                    value: true,
-                                    message: 'Status is required',
-                                },
-                                },
-                                textInputProps: {
-                                label: 'Status',
-                                
-                                },
-                                
-                            },
-                        //   {
-                        //     type: 'select',
-                        //     name: 'resume',
-                        //     rules: {
-                        //       required: {
-                        //         value: true,
-                        //       },
-                        //     },
-                        //     textInputProps: {
-                        //       label: 'Resume',
-                            
-                        //     },
-                        //     options: [
-                        //         {
-                        //           value:0,
-                        //           lable:'test1.pdf'
-                        //         },
-                        //         {
-                        //           value:1,
-                        //           lable:'test2.pdf'
-                        //         },
-                        //         {
-                        //           value:2,
-                        //           lable:'test3.pdf'
-                        //         }
-                        //       ]
-                        //   },
-                        {
-                            type: 'text',
-                            name: 'note',
-                            textInputProps: {
-                            label: 'Note',
-                            
-                            },
-                        },
-                        ]}
+                        name='companyName'
+                        render={({ field: {onChange, value } }) => (
+                            <View style={styles.textBox}>
+                                <TextInput 
+                                    style={styles.text}
+                                    placeholder="Company Name"
+                                    defaultValue={value}
+                                    onChangeText={(v) => onChange(v)}
+                                />
+                            </View>
+                        )}
                     />
-                
-                </ScrollView>
+                    <Controller
+                        control={control}
+                        name='position'
+                        render={({ field: {onChange, value } }) => (
+                            <View style={styles.textBox}>
+                                <TextInput 
+                                    style={styles.text}
+                                    placeholder="Position"
+                                    defaultValue={value}
+                                    onChangeText={(v) => onChange(v)}
+                                />
+                            </View>
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name='status'
+                        render={({ field: {onChange, value } }) => (
+                            <View style={styles.textBox}>
+                                <TextInput 
+                                    style={styles.text}
+                                    placeholder="Status"
+                                    defaultValue={value}
+                                    onChangeText={(v) => onChange(v)}
+                                />
+                            </View>
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name='note'
+                        render={({ field: {onChange, value } }) => (
+                            <View style={styles.textBox}>
+                                <TextInput 
+                                    style={styles.text}
+                                    placeholder="Note"
+                                    defaultValue={value}
+                                    onChangeText={(v) => onChange(v)}
+                                />
+                            </View>
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name='resume'
+                        data={resumes}
+                        render={({ field: {onChange, value }, item }) => (
+                            <DropDownPicker
+                                style={styles.dropdown}
+                                placeholder="Resume"
+                                placeholderStyle={styles.dropdownPlaceholder}
+                                open={listOpen}
+                                setOpen={() => setListOpen(!listOpen)}
+                                items={resumes}
+                                value={value}
+                                setValue={(item) => onChange(item())}
+                            />
+                        )}
+                    />
+                </View>
             </View>
         </KeyboardAvoidingView>
-    )
+    );
 }
 
 export default JobStatusForm
@@ -161,7 +195,7 @@ const styles = StyleSheet.create({
     btnContainer:{
         flexDirection:'row',
         justifyContent:'space-between'
-    }
+    },
 
     // containerStyle: {
     //     flex: 1,
@@ -176,4 +210,4 @@ const styles = StyleSheet.create({
     //     textAlign: 'center',
     //     marginBottom: 40,
     //   },
-})
+});
