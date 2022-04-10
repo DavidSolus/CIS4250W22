@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, FlatList, Platform,Dimensions,
   Animated,
   PanResponder,
   TouchableOpacity,
+  Pressable,
   Easing,
   KeyboardAvoidingView } from 'react-native'
 
@@ -14,21 +15,33 @@ import { JobStatusContext } from '../../contexts/JobStatusContext';
 
 const JobStatusScreen = ({navigation}) => {
 
-  const {deleteJobStatus, jobDoc} = useContext(JobStatusContext)
+  const {updateJobStatus,deleteJobStatus, jobDoc} = useContext(JobStatusContext)
 
   const pan = useRef(new Animated.ValueXY()).current;
 
   const [swipe, setSwipe] = useState()
 
   // const [myJobData, setMyJobData] = useState()
-  const Item = ({ job_ID, title, status, jobname, note}) => (
+  const Item = ({ job_ID, title, status, jobname, resume, note}) => (
     <View style={styles.item}>
-      <View>
+      <Pressable onLongPress = {()=>{
+                                      // updateJobStatus(job_ID, title, status, jobname, note)
+                                      // console.log("tet item:" + status)
+                                      navigation.navigate('JobStatusEdit', {
+                                        job_ID_Route:job_ID , 
+                                        titleRoute: title, 
+                                        statusRoute: status, 
+                                        jobnameRoute: jobname,
+                                        resumeRoute: resume, 
+                                        noteRoute: note
+                                      })
+                                          }}>
         <Text style={styles.title}>{title}</Text>
-        <Text> Status: {status}</Text>
         <Text> Position: {jobname} </Text>
-        <Text> Note: {jobname} </Text>
-      </View>
+        <Text> Status: {status}</Text>
+        <Text> Resume: {resume} </Text>
+        <Text> Note: {note} </Text>
+      </Pressable>
       <View>
         <TouchableOpacity
           style={styles.button}
@@ -50,6 +63,7 @@ const JobStatusScreen = ({navigation}) => {
               title = {item.companyName} 
               status= {item.status}
               jobname ={item.position}
+              resume= {item.resume}
               note = {item.note} />
       </>
     )

@@ -10,11 +10,13 @@ import { JobStatusContextProvider } from '../contexts/JobStatusContext';
 import ResumeScreen from '../features/resume/ResumeScreen';
 import { EmailScreen } from '../screens/email';
 import JobStatusNavigator from './JobStatusNavigator';
+import ResumeContextProvider from '../contexts/ResumeContext';
 
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => {
   return (
+    <ResumeContextProvider>
     <JobStatusContextProvider>
       <Tab.Navigator
         initialRouteName="JobStatusNav"
@@ -71,6 +73,7 @@ const AppNavigator = () => {
           }} />
       </Tab.Navigator>
     </JobStatusContextProvider>
+    </ResumeContextProvider>
   )
 }
 

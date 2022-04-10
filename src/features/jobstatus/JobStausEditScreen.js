@@ -1,40 +1,58 @@
-import { StyleSheet, Text, View, TouchableOpacity,KeyboardAvoidingView } from 'react-native'
-import React, { useContext, useState} from 'react'
-import { FormBuilder } from 'react-native-paper-form-builder';
+import { StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
+import React, {useContext, useState, useEffect} from 'react'
 import { useForm } from 'react-hook-form';
-import { Button , Provider, TextInput} from 'react-native-paper';
-import { AuthContext } from '../contexts/AuthContext';
-import { JobStatusContext } from '../contexts/JobStatusContext';
+import { JobStatusContext } from '../../contexts/JobStatusContext';
+import { FormBuilder } from 'react-native-paper-form-builder';
+import { Button, TextInput } from 'react-native-paper';
+import { AuthContext } from '../../contexts/AuthContext';
 
-const JobStatusForm = ({navigation, route}) => {
+const JobStausEditScreen = ({navigation, route}) => {
 
+    const {jobDoc, updateJobStatus} = useContext(JobStatusContext)
     const {user} = useContext(AuthContext)
-    const {createJobStatus} = useContext(JobStatusContext)
-    //recieve selected resume
 
-    const {rName} = route?.params || {};
+    // recieve original data from the form 
+    const { job_ID_Route, titleRoute, statusRoute, jobnameRoute, resumeRoute, noteRoute} = route.params
 
-    const auth_ID = user.uid
-    const resume = rName
-    const [companyName, setCompanyName] = useState('')
-    const [status, setStatus] = useState('')
-    const [position, setPosition] = useState('')
-    const [note, setNote] = useState('')
-    // const [resume, setResume] = useState('')
+    const {selectedRes} = route?.params
+    console.log("rec: " + selectedRes)
+    const [companyName, setCompanyName] = useState(titleRoute)
+    const [status, setStatus] = useState(statusRoute)
+    const [position, setPosition] = useState(jobnameRoute)
+    const [resume, setResume] = useState(resumeRoute)
+    const [note, setNote] = useState(noteRoute)
 
-    const data = {
-        auth_ID,
+    // console.log("testing user:" + user.uid)
+    console.log("testing resume:" + resumeRoute)
+    const dataUpdate = {
+        id: job_ID_Route ,
+        auth_ID: user.uid,
         companyName,
-        status,
         position,
+        status,
+        resume,
         note,
-        resume
     }
-       
-    console.log("recieving resumes: "+ resume)
 
-    return (
-        <KeyboardAvoidingView
+    useEffect(()=>{
+        if(selectedRes){
+            setResume(selectedRes)
+        }
+    },[selectedRes])
+
+    // const {control, setFocus, handleSubmit} = useForm({
+    //     defaultValues: {
+    //         id: job_ID_Route ,
+    //         auth_ID: user.uid,
+    //         companyName: titleRoute,
+    //         position: jobnameRoute,
+    //         status: statusRoute,
+    //         note: noteRoute,
+    //     },
+    //     mode: 'onChange',
+    //     });
+  return (
+    <KeyboardAvoidingView
             behavior='padding'
             style = {styles.container}>
 
@@ -51,14 +69,15 @@ const JobStatusForm = ({navigation, route}) => {
                         // mode={'contained'}
                         style={styles.btn}
                         onPress = {()=>{
-                            createJobStatus(data)
+                            updateJobStatus(dataUpdate)
                             navigation.replace('JobStatus')
-                            console.log('form data', data);
+                            console.log('form data', dataUpdate);
                         }}
                         >
-                        Add
+                        Update
                     </Button>
             </View> 
+            
             <View>
                 <TextInput
                 mode="outlined"
@@ -91,7 +110,7 @@ const JobStatusForm = ({navigation, route}) => {
                 />
 
                 <TouchableOpacity onPress={()=>{
-                    navigation.navigate('ResumeSelect')
+                    navigation.navigate('ResumeSelect', {resumeExist:resume})
                     console.log("pressed")
                 }}>
                 <TextInput
@@ -121,10 +140,8 @@ const JobStatusForm = ({navigation, route}) => {
 
             
             </View>
-            
 
-            {/* <Provider>
-            <View style={styles.containerStyle}>
+            {/* <View style={styles.containerStyle}>
                 <View style={styles.btnContainer}>
                     <Button
                         // mode={'contained'}
@@ -138,16 +155,16 @@ const JobStatusForm = ({navigation, route}) => {
                         // mode={'contained'}
                         style={styles.btn}
                         onPress={handleSubmit((data) => {
-                            createJobStatus(data)
+                            updateJobStatus(data)
                             navigation.replace('JobStatus')
-                        //   console.log('form data', data);
+                        //   console.log('form data: ',data.companyName);
                         })}>
-                        Add
+                        Update
                     </Button>
                 </View>
                 <ScrollView contentContainerStyle={styles.scrollViewStyle}>
                     
-                    <FormBuilder
+                    <FormBuilder 
                         control={control}
                         setFocus={setFocus}
                         formConfigArray={[
@@ -194,38 +211,38 @@ const JobStatusForm = ({navigation, route}) => {
                                 },
                                 
                             },
-                          {
-                            type: 'select',
-                            name: 'resume',
-                            rules: {
-                              required: {
-                                value: true,
-                              },
-                            },
-                            textInputProps: {
-                              label: 'Resume',
+                        //   {
+                        //     type: 'select',
+                        //     name: 'resume',
+                        //     rules: {
+                        //       required: {
+                        //         value: true,
+                        //       },
+                        //     },
+                        //     textInputProps: {
+                        //       label: 'Resume',
                             
-                            },
-                            options: [
-                                {
-                                  value:0,
-                                  lable:'test1.pdf'
-                                },
-                                {
-                                  value:1,
-                                  lable:'test2.pdf'
-                                },
-                                {
-                                  value:2,
-                                  lable:'test3.pdf'
-                                }
-                              ]
-                          },
+                        //     },
+                        //     options: [
+                        //         {
+                        //           value:0,
+                        //           lable:'test1.pdf'
+                        //         },
+                        //         {
+                        //           value:1,
+                        //           lable:'test2.pdf'
+                        //         },
+                        //         {
+                        //           value:2,
+                        //           lable:'test3.pdf'
+                        //         }
+                        //       ]
+                        //   },
                         {
                             type: 'text',
                             name: 'note',
                             textInputProps: {
-                            label: 'Note',
+                                label: 'Note',
                             
                             },
                         },
@@ -233,17 +250,16 @@ const JobStatusForm = ({navigation, route}) => {
                     />
                 
                 </ScrollView>
-            </View>
-            </Provider> */}
+            </View> */}
         </KeyboardAvoidingView>
-    )
+  )
 }
 
-export default JobStatusForm
+export default JobStausEditScreen
 
 const styles = StyleSheet.create({
     container: {
-        flex:1,
+        flex:0.60,
         alignContent: "center",
         justifyContent: "center",
         paddingHorizontal:25
@@ -257,24 +273,5 @@ const styles = StyleSheet.create({
     btnContainer:{
         flexDirection:'row',
         justifyContent:'space-between'
-    },
-    // scrollViewStyle: {
-    //     flex: 0.5,
-    //     padding: 15,
-    //     justifyContent: 'center',
-    // },
-
-    // containerStyle: {
-    //     flex: 1,
-    //   },
-    //   scrollViewStyle: {
-    //     flex: 1,
-    //     padding: 15,
-    //     justifyContent: 'center',
-    //   },
-    //   headingStyle: {
-    //     fontSize: 30,
-    //     textAlign: 'center',
-    //     marginBottom: 40,
-    //   },
+    }
 })

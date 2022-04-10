@@ -72,7 +72,7 @@ const ResumeScreen = () => {
 		let filesInStorageList = [];
 		let content = [];
 		const listRef = ref(storage, filePath);
-	
+		
 		// Get the files from the storage account
 		try {
 			const res = await listAll(listRef);
@@ -87,7 +87,7 @@ const ResumeScreen = () => {
 		
 			console.log("..returning Listing Files");
 			return filesInStorageList;
-			console.log(filesinStorage)
+			console.log(filesInStorageList)
 		} catch (err) {
 			console.log("ListFile() error: " + err);
 		}
@@ -123,7 +123,7 @@ const ResumeScreen = () => {
 				// console.log(resumeArray);
 				setFilesInStorage(resumeArray)
 				// setResumeArray({
-					console.log("item name access:"+ filesinStorage);
+					// console.log("item name access:"+ filesinStorage);
 				// 	resumeArray
 				// });
 			});
