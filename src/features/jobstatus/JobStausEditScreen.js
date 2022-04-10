@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
-import React, {useContext, useState} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import { useForm } from 'react-hook-form';
 import { JobStatusContext } from '../../contexts/JobStatusContext';
 import { FormBuilder } from 'react-native-paper-form-builder';
@@ -14,6 +14,8 @@ const JobStausEditScreen = ({navigation, route}) => {
     // recieve original data from the form 
     const { job_ID_Route, titleRoute, statusRoute, jobnameRoute, resumeRoute, noteRoute} = route.params
 
+    const {selectedRes} = route?.params
+    console.log("rec: " + selectedRes)
     const [companyName, setCompanyName] = useState(titleRoute)
     const [status, setStatus] = useState(statusRoute)
     const [position, setPosition] = useState(jobnameRoute)
@@ -31,6 +33,12 @@ const JobStausEditScreen = ({navigation, route}) => {
         resume,
         note,
     }
+
+    useEffect(()=>{
+        if(selectedRes){
+            setResume(selectedRes)
+        }
+    },[selectedRes])
 
     // const {control, setFocus, handleSubmit} = useForm({
     //     defaultValues: {
@@ -102,7 +110,7 @@ const JobStausEditScreen = ({navigation, route}) => {
                 />
 
                 <TouchableOpacity onPress={()=>{
-                    navigation.navigate('ResumeSelect')
+                    navigation.navigate('ResumeSelect', {resumeExist:resume})
                     console.log("pressed")
                 }}>
                 <TextInput

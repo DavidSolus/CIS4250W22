@@ -9,17 +9,32 @@ const ResumeSelection = ({navigation, route}) => {
 
   const {user} = useContext(AuthContext)
   const {UploadFile, DeleteFile, filesinStorage} = useContext(ResumeContext)
-  const [selectedResume, setSelectedResume] = useState('')
-  // const {resumeSel} = route.params
+  // const [selectedResume, setSelectedResume] = useState('')
+  const {resumeExist} = route?.params || {}
+
+  console.log("Existing resume: " + resumeExist) 
+
   console.log(filesinStorage.name)
   const Item = ({ rName }) => (
     <View style={styles.item}>
 
       <Pressable onPress={()=>{
-        setSelectedResume(rName)
-        // navigation.navigate('JobForm', {rName} )
+        // setSelectedResume(rName)
+        if (resumeExist === undefined) {
+          navigation.navigate('JobForm', {rName} )
+          console.log("selected resume to add status: "+ rName)
+        }
+        else{
+          
+          // navigation.goBack( {rName} )JobStatusEdit
+          navigation.navigate({
+            name: 'JobStatusEdit',
+            params: { selectedRes: rName },
+            merge: true, })  
+          console.log("selected resume to edit: "+ rName)
+        }
         
-        console.log("word "+ selectedResume)
+        
       }} >
       <View>
         <Text style={styles.title}>{rName}</Text>
@@ -71,6 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#81f0c7',
     marginBottom:3,
     marginTop:5,
+    justifyContent:'space-between',
     flexDirection:'row',
     borderRadius:10, 
     padding:10

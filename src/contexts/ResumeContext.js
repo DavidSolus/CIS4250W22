@@ -15,6 +15,7 @@ export default function ResumeContextProvider({children}) {
 
     const {user} = useContext(AuthContext);
 	const [filesinStorage, setFilesInStorage] = useState({})
+	
 
     const directory = "Resumes/";
     const UUID = "UUID_NUMBER/"; //TODO maybe change to metadeta

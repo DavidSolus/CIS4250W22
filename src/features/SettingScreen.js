@@ -9,7 +9,7 @@ const SettingScreen = () => {
   return (
     <>
       <View>
-        <Text>SettingScreen</Text>
+        
         <Text style={styles.emailContainer}>Registered as: {user.email}</Text>
 
       </View>
@@ -23,6 +23,6 @@ export default SettingScreen
 const styles = StyleSheet.create({
   emailContainer: {
     padding:10,
-    fontSize:18
+    fontSize:20
   }
 })
