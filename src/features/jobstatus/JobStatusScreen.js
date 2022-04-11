@@ -89,6 +89,7 @@ const JobStatusScreen = ({navigation}) => {
             ))
           }
         />
+        <Button onPress={()=>{navigation.replace('JobStats')}}> View Application Stats </Button>
         <FAB
           style={styles.fab}
           icon="plus"
