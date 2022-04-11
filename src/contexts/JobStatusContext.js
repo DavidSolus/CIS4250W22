@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React, {createContext, useState, useEffect, useContext} from 'react'
 import { db } from '../../firebase';
-import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { AuthContext } from './AuthContext';
 import { StorageUtility } from '../Utils/storageUtility';
 
@@ -69,16 +69,15 @@ export const JobStatusContextProvider = ({children}) =>{
 
     useEffect(()=>{
         getJobStatusSnapshot()
-    },[user, user.uid])
+    },[user])
 
-    console.log(jobDoc)
     // Delelete Job status
     const deleteJobStatus = async (id)=>{
         try{
-        const delDoc = await deleteDoc(doc(db,"JobStatusCollection", id))
-        console.log(id)
+            const delDoc = await deleteDoc(doc(db,"JobStatusCollection", id))
+            console.log(id)
         }catch(err){
-        console.log(err.message)
+            console.log(err.message)
         }
         
     }
@@ -87,27 +86,23 @@ export const JobStatusContextProvider = ({children}) =>{
     //     deleteJobStatus()
     // },[id])
 
-    useEffect(()=>{
-        getResume();
-    }, []);
+    //update data
 
-    // Gets the list of resumes that exist in the database
-    const getResume = () => {
-		try {
-			StorageUtility()
-			.then((resumeArray) => {
-				setResumeList(resumeArray)
-					console.log("JobStatusContext: item name access:" + JSON.stringify(resumeList));
-			});
-		} catch (err) {
-			console.log("getData error: " + err);
-		}
-	};
+    const updateJobStatus = async (updatedJobs)=>{
+
+        try{
+            const jobRef = doc(db,"JobStatusCollection", updatedJobs.id)
+            // console.log("from up: "+ jobRef)
+            await updateDoc(jobRef, updatedJobs)
+        }catch(e){
+            console.log(e.message)
+        }
+    }
 
 
     return(
         <JobStatusContext.Provider 
-            value={{ jobDoc ,createJobStatus, deleteJobStatus, resumeList }} >
+            value={{ jobDoc ,createJobStatus, deleteJobStatus, updateJobStatus }} >
             {children}
         </JobStatusContext.Provider>
 

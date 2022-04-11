@@ -26,7 +26,7 @@ function EmailScreen({ navigation }) {
       const result = await Google.logInAsync ({
         androidClientId: "313332122751-ollluipvbg60kumi9engkerqv553045n.apps.googleusercontent.com",
         iosClientId: "313332122751-5gqn8c5ha4fivukqge8lrqr1ro1vh1dj.apps.googleusercontent.com",
-        scopes: ["https://mail.google.com/ https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly"]
+        scopes: ["https://mail.google.com/ https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly "]
       });
 
       if(result.type === "success") {

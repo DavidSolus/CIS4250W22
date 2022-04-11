@@ -59,6 +59,36 @@ const ResumeScreen = () => {
 			/>
 		);
 	}
+
+	const ListFile = async () => {
+		console.log("Running ListFile()");
+	
+		// Reference Firebase Container
+		let filesInStorageList = [];
+		let content = [];
+		const listRef = ref(storage, filePath);
+		
+		// Get the files from the storage account
+		try {
+			const res = await listAll(listRef);
+			res.items.forEach((itemRef) => {
+				// let filesObject = {};
+				let filesObject = []
+				let fileInStorage = itemRef["_location"]["path_"].slice(filePath.length);
+				filesObject["name"] = fileInStorage;
+				filesInStorageList.push(filesObject);
+				
+			});
+		
+			console.log("..returning Listing Files");
+			return filesInStorageList;
+			console.log(filesInStorageList)
+		} catch (err) {
+			console.log("ListFile() error: " + err);
+		}
+        // console.log("listfiles somome ")
+        // console.log(filesInStorageList)
+	}
 	
 	const DeleteFile = (name) => {
 		// Create a reference to the file to delete
@@ -127,7 +157,10 @@ const ResumeScreen = () => {
 			StorageUtility()
 			.then((resumeArray) => {
 				setFilesInStorage(resumeArray)
-					console.log("ResumeScreen.js - getData - Returning: " + JSON.stringify(filesinStorage));
+				// setResumeArray({
+					// console.log("item name access:"+ filesinStorage);
+				// 	resumeArray
+				// });
 			});
 		} catch (err) {
 			console.log("ResumeScreen.js - getData - Error: " + err);
