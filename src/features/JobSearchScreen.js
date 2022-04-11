@@ -46,10 +46,16 @@ const SearchGoogleButton = ({}) => {
     let url = "";
     switch (website) {
       case google:
-        url = googleSearchURL+textInputValue;
+        url = googleSearchURL+textInputValue+" jobs";
+        if (cityInputValue != "") {
+          url += " near " + cityInputValue;
+        }
         break;
       case indeed:
         url = indeedSearchURL+textInputValue;
+        if (cityInputValue != "") {
+          url += "&l=" + cityInputValue;
+        }
         break;
       case linkedin:
         url = linkedInSearchURL+textInputValue;
