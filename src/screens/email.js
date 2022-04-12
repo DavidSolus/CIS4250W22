@@ -16,6 +16,10 @@ function EmailScreen({ navigation }) {
   const [sendTo, setSendTo] = React.useState();
   const [sendSubject, setSendSubject] = React.useState();
   const [sendBody, setSendBody] = React.useState();
+
+  // date filter variabals 
+  const [startDate, setStartDate] = React.useState();
+  const [endDate, setEndDate] = React.useState();
  
   const [emailType, setEmailType] = React.useState(1); //change the type of mailbox the user sees
   const [filterEmail, setFilterEmail] = React.useState(); //filter emails by text (sender, subject, or body keyword)

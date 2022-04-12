@@ -88,7 +88,7 @@ const JobStatusForm = ({navigation, route}) => {
 
     return (
         <KeyboardAvoidingView
-            behavior='padding'
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             style = {styles.container}>
 
             <View style={styles.btnContainer}>
