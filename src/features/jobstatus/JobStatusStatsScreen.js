@@ -1,4 +1,4 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react'
 import { JobStatusContext } from '../../contexts/JobStatusContext';
 
@@ -6,14 +6,21 @@ const JobStatusStatsScreen = ({navigation}) => {
   const {jobDoc} = useContext(JobStatusContext);
   const [jobStatus, setJobStatus] = useState();
   const [jobDict, setJobDict] = useState({});
+  const [numApplication, setNumApplications] = useState();
 
   useEffect(()=>{
     countStats();
-  },[])
+  },[]);
+
+  // USE THESE NAMES FOR THE STATUS: *********************************************
+  // Reject
+  // Interview
+  // Offer
 
   const countStats = () => {
     let statusList = [];
     let statusDic = {};
+    let num = 0;
 
     jobDoc.forEach(element => {
       let tempStatus = element.status;
@@ -25,10 +32,12 @@ const JobStatusStatsScreen = ({navigation}) => {
       } else {
         statusDic[tempStatus] = 1;
       }
+      num += 1
     });
 
     setJobStatus(statusList);
     setJobDict(statusDic);
+    setNumApplications(num);
 
     checkJobStatusState();
   }
@@ -43,8 +52,19 @@ const JobStatusStatsScreen = ({navigation}) => {
     <View><Text></Text>
       <Button title="Return" onPress={()=>{navigation.replace('JobStatus')}}></Button>
       {/* <Button title="Checking Stats" onPress={()=>{checkJobStatusState()}}></Button> */}
+      <Text style={styles.title}>Number of Applications: {numApplication}</Text>
+      <Text style={styles.title}>Number of Rejections: {jobDict["Reject"] ? jobDict["Reject"] : 0}</Text>
+      <Text style={styles.title}>Number of Interviews: {jobDict["Interview"] ? jobDict["Interview"] : 0}</Text>
+      <Text style={styles.title}>Number of Offers: {jobDict["Offer"] ? jobDict["Offer"] : 0}</Text>
     </View>
   );
-} 
+}
+
+const styles = StyleSheet.create({
+  title:{
+    fontSize: 24,
+    fontWeight:'700',
+  },
+});
 
 export default JobStatusStatsScreen;
