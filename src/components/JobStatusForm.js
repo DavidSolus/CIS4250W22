@@ -23,6 +23,11 @@ const JobStatusForm = ({navigation, route}) => {
     const [note, setNote] = useState('')
     // const [resume, setResume] = useState('')
 
+    // USE THESE NAMES FOR THE STATUS: *********************************************
+    // Reject
+    // Interview
+    // Offer
+
     const data = {
         auth_ID,
         companyName,
