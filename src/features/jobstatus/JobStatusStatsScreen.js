@@ -35,6 +35,10 @@ const JobStatusStatsScreen = ({navigation}) => {
       num += 1
     });
 
+    if (!statusDic["Reject"]) {statusDic["Reject"] = 0;}
+    if (!statusDic["Interview"]) {statusDic["Interview"] = 0;}
+    if (!statusDic["Offer"]) {statusDic["Offer"] = 0;}
+
     setJobStatus(statusList);
     setJobDict(statusDic);
     setNumApplications(num);
@@ -53,9 +57,15 @@ const JobStatusStatsScreen = ({navigation}) => {
       <Button title="Return" onPress={()=>{navigation.replace('JobStatus')}}></Button>
       {/* <Button title="Checking Stats" onPress={()=>{checkJobStatusState()}}></Button> */}
       <Text style={styles.title}>Number of Applications: {numApplication}</Text>
-      <Text style={styles.title}>Number of Rejections: {jobDict["Reject"] ? jobDict["Reject"] : 0}</Text>
-      <Text style={styles.title}>Number of Interviews: {jobDict["Interview"] ? jobDict["Interview"] : 0}</Text>
-      <Text style={styles.title}>Number of Offers: {jobDict["Offer"] ? jobDict["Offer"] : 0}</Text>
+      <Text style={styles.title}>Number of Rejections: {jobDict["Reject"]}</Text>
+      <Text style={styles.title}>Number of Interviews: {jobDict["Interview"]}</Text>
+      <Text style={styles.title}>Number of Offers: {jobDict["Offer"]}</Text>
+      <Text></Text>
+      <Text style={styles.title}>1 - Apps Rejected: {jobDict["Reject"] / numApplication * 100}%</Text>
+      <Text style={styles.title}>2 - Apps Interviews: {jobDict["Interview"] / numApplication * 100}%</Text>
+      <Text style={styles.title}>3 - Apps Offer: {jobDict["Offer"] / numApplication * 100}%</Text>
+      <Text style={styles.title}>4 - Apps Interviews to Offers: {jobDict["Offer"] / jobDict["Interview"] * 100}%</Text>
+      <Text></Text>
     </View>
   );
 }
