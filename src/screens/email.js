@@ -1,12 +1,12 @@
 // React
-import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Modal, TextInput } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Modal, TextInput, DateTimePicker } from 'react-native';
 import * as Google from 'expo-google-app-auth';
 // import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {useContext} from 'react';
 import * as MailComposer from 'expo-mail-composer';
-
-
+import { JobStatusContext } from '../contexts/JobStatusContext';
+ 
+ 
 function EmailScreen({ navigation }) {
   const [accessToken, setAccessToken] = React.useState();
   const [userInfo, setUserInfo] = React.useState();
@@ -16,19 +16,21 @@ function EmailScreen({ navigation }) {
   const [sendTo, setSendTo] = React.useState();
   const [sendSubject, setSendSubject] = React.useState();
   const [sendBody, setSendBody] = React.useState();
-
-
-  //var arrayEmails = [{"id":"1","from":"ajshields@rogers.com","subject":"test","body":"this is the first email with lots of writing to see if itll go off page"},{"id":"2","from":"ashiel01@uoguelph.ca","subject":"test2","body":"this is the second email, sent from school email"},{"id":"3","from":"ajshields@rogers.com","subject":"hello","body":"hello world, i am alive"}];
+ 
+  const [emailType, setEmailType] = React.useState(1); //change the type of mailbox the user sees
+  const [filterEmail, setFilterEmail] = React.useState(); //filter emails by text (sender, subject, or body keyword)
+ 
   var arrayEmails = [];
-
+  const {jobDoc} = useContext(JobStatusContext); //Al infor from JobStatus page (meant for relevant job email info)
+ 
   async function signInWithGoogleAsync() {
     try {
       const result = await Google.logInAsync ({
         androidClientId: "313332122751-ollluipvbg60kumi9engkerqv553045n.apps.googleusercontent.com",
         iosClientId: "313332122751-5gqn8c5ha4fivukqge8lrqr1ro1vh1dj.apps.googleusercontent.com",
-        scopes: ["https://mail.google.com/ https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly "]
+        scopes: ["https://mail.google.com/ https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly"]
       });
-
+ 
       if(result.type === "success") {
         setAccessToken(result.accessToken);
       } else {
@@ -38,7 +40,7 @@ function EmailScreen({ navigation }) {
       console.log(error);
     }
   }
-
+ 
   //Get all user data including profile and email api calls
   async function getUserData() {
     //Get user profile data
@@ -48,7 +50,7 @@ function EmailScreen({ navigation }) {
     userInfoResponse.json().then(data => {
       setUserInfo(data);
     });
-
+ 
     //Get user email list data
     let userEmailListResponse = await fetch("https://gmail.googleapis.com/gmail/v1/users/"+userInfo.email+"/messages", {
       headers: { Authorization: `Bearer ${accessToken}`}
@@ -60,7 +62,7 @@ function EmailScreen({ navigation }) {
       }
       setUserEmailList(tempEmailList);
     });
-
+ 
     //Get user email info
     var tempEmail = [];
     for(var i = 0; i < userEmailList.length; i++) {
@@ -73,7 +75,7 @@ function EmailScreen({ navigation }) {
     }
     setUserEmail(tempEmail);
   }
-
+ 
   function showUserInfo() {
     if(userInfo) {
       return (
@@ -85,9 +87,37 @@ function EmailScreen({ navigation }) {
       );
     }
   }
-
-  //console.log(jsonArray);
-
+ 
+  function showFilters() {
+    if(userEmail) {
+      switch(emailType) { //checks specific json headers for from and subject values
+        case 1:
+          var type = "Inbox"
+          break;
+        case 2:
+          var type = "Application Inbox"
+          break;
+        case 3:
+          var type = "Sent"
+          break;
+        default:
+          var type = "Inbox"
+          break;
+      }
+      return(
+        <>
+          <View style={styles.mailboxButtons}>
+            <Button title={"Inbox"} onPress={() => setEmailType(1)}/>
+            <Button title={"Application Inbox"} onPress={() => setEmailType(2)}/>
+            <Button title={"Sent"} onPress={() => setEmailType(3)}/>
+          </View>
+          <TextInput value={filterEmail} onChangeText={(filterEmail) => setFilterEmail(filterEmail)} placeholder={'Filter by...'} style={styles.input} />
+          <Text style={{fontWeight:'bold', fontSize:16, padding:10}}>Mailbox: {type}</Text>
+        </>
+      );
+    }
+  }
+ 
   function showUserEmails() {
     if(userInfo) {
       if(userEmail) {
@@ -95,16 +125,25 @@ function EmailScreen({ navigation }) {
         for(var i = 0; i < userEmail.length; i++) {
           var checkInInbox = false;
           for(var j = 0; j < userEmail[i].labelIds.length; j++) { //checks to see if the mail item is in the inbox mailbox
-            if(userEmail[i].labelIds[j] == "INBOX")
-              checkInInbox = true
+            if(emailType == 1 || emailType == 2) {
+              if(userEmail[i].labelIds[j] == "INBOX")
+                checkInInbox = true;
+            } else if(emailType == 3) {
+              if(userEmail[i].labelIds[j] == "SENT")
+                checkInInbox = true;
+            }
           }
-          if(checkInInbox) { //only post email if it is in the inbox mailbox
+          if(checkInInbox) { //only post email if it is in the correct mailbox
             var tempFrom;
+            var tempDate;
             var tempSubject;
             for(var j = 0; j < userEmail[i].payload.headers.length; j++) {
               switch(userEmail[i].payload.headers[j].name) { //checks specific json headers for from and subject values
                 case "From":
                   tempFrom = userEmail[i].payload.headers[j].value;
+                  break;
+                case "Date":
+                  tempDate = userEmail[i].payload.headers[j].value;
                   break;
                 case "Subject":
                   tempSubject = userEmail[i].payload.headers[j].value;
@@ -113,10 +152,12 @@ function EmailScreen({ navigation }) {
                   break;
               }
             }
-
+ 
+            //create second check if statement depending on user preferences (dates and keyword searches) here
             const tempJSON = { //create temp json to add to entire array
               "id":i,
               "from":tempFrom,
+              "date":tempDate,
               "subject":tempSubject,
               "body":userEmail[i].snippet.replace('&#39;','\'')
             }
@@ -124,20 +165,60 @@ function EmailScreen({ navigation }) {
           }
         }
       }
-
-      //Loop through all emails and set up each email message on the screen with all info
+       
       const getEmails = arrayEmails => {
         let content = [];
         for (let i = 0; i < arrayEmails.length; i++) {
           const item = arrayEmails[i];
-          content.push(<><Text key={item.id} style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+         
+          //Loop through all emails and set up each email message on the screen with all info
+          if(filterEmail == undefined || filterEmail.length == 0) { //filter by all emails
+            if(emailType == 2 || emailType == 3) { //if this is the application or sent mailbox (auto parse important stuff) (important info comes from an application company and position)
+              for(var j = 0; j < jobDoc.length; j++) {
+                if(item.from.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].companyName.toLowerCase())) //if the company name exists in the email
+                  content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                else if(item.from.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].position.toLowerCase())) //if the position exists in the email
+                  content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+              }
+            } else { //inbox mailbox (all emails)
+              content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+            }
+          } else { //filter by keyword
+            //loop through substring (no alpha caps letters) of from, subject, and body to search for keyword and use email if found
+            var checkFilter = false;
+            var tempFilterEmail = filterEmail.toLowerCase();
+            var tempCompareFilter = "";
+            for(var j = 0; j < 3; j++) { //'filter by' from, subject, and body
+              if(j == 0)
+                tempCompareFilter = item.from.toLowerCase();
+              else if(j == 1)
+                tempCompareFilter = item.subject.toLowerCase();
+              else if(j == 2)
+                tempCompareFilter = item.body.toLowerCase();
+ 
+              if(tempCompareFilter.includes(tempFilterEmail)) //if 'filter by' is included in email
+                checkFilter = true;
+            }
+            if(checkFilter) { //if passes the filter check
+              if(emailType == 2 || emailType == 3) { //if this is the application or sent mailbox (auto parse important stuff) (important info comes from an application company and position)
+                for(var j = 0; j < jobDoc.length; j++) {
+                  if(item.from.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].companyName.toLowerCase())) //if the company name exists in the email
+                    content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                  else if(item.from.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].position.toLowerCase())) //if the position exists in the email
+                    content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                }
+              } else { //inbox mailbox (all emails)
+                content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+              }
+            }
+          }
         }
         return content;
       };
       return <View style={styles.emailInfo}>{getEmails(arrayEmails)}</View>;
     }
   }
-
+ 
   //Used to isolate the email adress from the sender header
   function getReplyEmailAddress(email) {
     for(var j = 0; j < email.length; j++) {
@@ -149,7 +230,7 @@ function EmailScreen({ navigation }) {
     var replyEmail = email.substring(start, end);
     return replyEmail;
   }
-
+ 
   function sendEmailButton() {
     if(accessToken) {
       return(
@@ -157,7 +238,7 @@ function EmailScreen({ navigation }) {
       );
     }
   }
-
+ 
   //Send email functionality
   async function sendEmailAsync() {
     let result = await MailComposer.composeAsync({
@@ -165,10 +246,10 @@ function EmailScreen({ navigation }) {
       subject: sendSubject,
       body: sendBody,
     });
-  
+ 
     alert(result.status);
   }
-
+ 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
@@ -188,6 +269,7 @@ function EmailScreen({ navigation }) {
           <Button title={accessToken ? "View Inbox" : "Sign in with Google"} onPress={accessToken ? getUserData : signInWithGoogleAsync} />
           {sendEmailButton()}
         </View>
+        {showFilters()}
         {showUserEmails()}
         <Text>{'\n'}</Text>
         {/* <StatusBar style="auto" />  */}
@@ -195,7 +277,7 @@ function EmailScreen({ navigation }) {
     </SafeAreaView>
   );
 }
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -214,6 +296,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flex: 1
   },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
   buttons: {
     paddingTop: 40,
     paddingBottom: 40,
@@ -223,8 +311,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly'
   },
+  mailboxButtons: {
+    paddingBottom: 10,
+    width: 'auto',
+    flex: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly'
+  },
   replyButtons: {
-    paddingTop: 20
+    paddingTop: 20,
+    width: 'auto',
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
   },
   userInfo: {
     paddingTop: 20,
@@ -252,5 +352,5 @@ const styles = StyleSheet.create({
     height: 50
   }
 });
-
+ 
 export { EmailScreen };
