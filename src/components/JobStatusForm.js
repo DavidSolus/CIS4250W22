@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Button , Provider, TextInput} from 'react-native-paper';
 import { AuthContext } from '../contexts/AuthContext';
 import { JobStatusContext } from '../contexts/JobStatusContext';
+import { StorageUtility } from '../Utils/storageUtility';
 
 const JobStatusForm = ({navigation, route}) => {
 
@@ -21,6 +22,11 @@ const JobStatusForm = ({navigation, route}) => {
     const [position, setPosition] = useState('')
     const [note, setNote] = useState('')
     // const [resume, setResume] = useState('')
+
+    // USE THESE NAMES FOR THE STATUS: *********************************************
+    // Reject
+    // Interview
+    // Offer
 
     const data = {
         auth_ID,
@@ -121,122 +127,8 @@ const JobStatusForm = ({navigation, route}) => {
 
             
             </View>
-            
-
-            {/* <Provider>
-            <View style={styles.containerStyle}>
-                <View style={styles.btnContainer}>
-                    <Button
-                        // mode={'contained'}
-                        style={styles.btn}
-                        onPress={()=>{
-                            navigation.replace('JobStatus')
-                        }}>
-                        Cancel
-                    </Button>
-                    <Button
-                        // mode={'contained'}
-                        style={styles.btn}
-                        onPress={handleSubmit((data) => {
-                            createJobStatus(data)
-                            navigation.replace('JobStatus')
-                        //   console.log('form data', data);
-                        })}>
-                        Add
-                    </Button>
-                </View>
-                <ScrollView contentContainerStyle={styles.scrollViewStyle}>
-                    
-                    <FormBuilder
-                        control={control}
-                        setFocus={setFocus}
-                        formConfigArray={[
-                            
-                            {
-                                type: 'text',
-                                name: 'companyName',
-                                rules: {
-                                required: {
-                                    value: true,
-                                    message: 'Company name is required',
-                                },
-                                },
-                                textInputProps: {
-                                label: 'Company Name',
-                                },
-                            },
-                            {
-                                type: 'text',
-                                name: 'position',
-                                rules: {
-                                required: {
-                                    value: true,
-                                    message: 'Position is required',
-                                },
-                                },
-                                textInputProps: {
-                                label: 'Position',
-                                
-                                },
-                            },
-                            {
-                                type: 'text',
-                                name: 'status',
-                                rules: {
-                                required: {
-                                    value: true,
-                                    message: 'Status is required',
-                                },
-                                },
-                                textInputProps: {
-                                label: 'Status',
-                                
-                                },
-                                
-                            },
-                          {
-                            type: 'select',
-                            name: 'resume',
-                            rules: {
-                              required: {
-                                value: true,
-                              },
-                            },
-                            textInputProps: {
-                              label: 'Resume',
-                            
-                            },
-                            options: [
-                                {
-                                  value:0,
-                                  lable:'test1.pdf'
-                                },
-                                {
-                                  value:1,
-                                  lable:'test2.pdf'
-                                },
-                                {
-                                  value:2,
-                                  lable:'test3.pdf'
-                                }
-                              ]
-                          },
-                        {
-                            type: 'text',
-                            name: 'note',
-                            textInputProps: {
-                            label: 'Note',
-                            
-                            },
-                        },
-                        ]}
-                    />
-                
-                </ScrollView>
-            </View>
-            </Provider> */}
         </KeyboardAvoidingView>
-    )
+    );
 }
 
 export default JobStatusForm
@@ -277,4 +169,4 @@ const styles = StyleSheet.create({
     //     textAlign: 'center',
     //     marginBottom: 40,
     //   },
-})
+});

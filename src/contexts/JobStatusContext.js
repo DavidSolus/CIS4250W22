@@ -3,6 +3,7 @@ import React, {createContext, useState, useEffect, useContext} from 'react'
 import { db } from '../../firebase';
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { AuthContext } from './AuthContext';
+import { StorageUtility } from '../Utils/storageUtility';
 
 export const JobStatusContext = createContext();
 
@@ -10,7 +11,8 @@ export const JobStatusContextProvider = ({children}) =>{
 
     const {user} = useContext(AuthContext)
     const jobsCollectionRef = collection(db, "JobStatusCollection")
-    const [jobDoc, setJobDoc] = useState({}) // get data and store from database
+    const [jobDoc, setJobDoc] = useState({}); // get data and store from database
+    const [resumeList, setResumeList] = useState(); 
     // const [appJobs, setAppJobs] = useState({ "auth_ID":user.uid, "companyName":"", "jobName":"", "status":"", "note":"" })
 
     // create new jobs status
@@ -23,7 +25,7 @@ export const JobStatusContextProvider = ({children}) =>{
         } catch (e) {
             console.error("Error adding document: ", e);
         }
-    }    
+    }
 
     // read data from the collection: only once
     const getJobStatus = ( async ()=>{
