@@ -25,118 +25,24 @@ function EmailScreen({ navigation }) {
 
   const onPressImportant = ()=>{
     if(flag === true){
-        setFlag(false)
+      setFlag(false)
     }else{
-        setFlag(true)
+      setFlag(true)
     }
-    console.log("from func :" +flag)
-    
+    //console.log("from func :" +flag)
   }
-  function showDateFilters(){
-    // date filter variabals 
-    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
-    const [isDatePickerVisibleEnd, setDatePickerVisibilityEnd] = React.useState(false);
-    const [startDate, setStartDate] = React.useState(new Date());
-    const [endDate, setEndDate] = React.useState(new Date());
-
-    //date filter functions
-    //start date picker
-    const showDatePicker = () => {
-      setDatePickerVisibility(true);
-        
-    };
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    };
-
-    const handleConfirm = date => {
-        setStartDate(date)
-        hideDatePicker();
-        // setDatePickerVisibility(false)
-    };
-
-    //End Date Picker
-    const showDatePickerEnd = () => {
-        setDatePickerVisibilityEnd(true);
-        
-    };
-
-    const hideDatePickerEnd = () => {
-        setDatePickerVisibilityEnd(false);
-    };
-
-    const handleConfirmEnd = date => {
-        setEndDate(date)
-        hideDatePickerEnd();
-    };
-
-    return(
-      <>
-        <View style= {styles.dateFilterContainer}>
-
-          <View style={styles.dateInput}>
-              <TouchableOpacity onPress={()=>{
-                      showDatePicker()
-                  }}>
-                  <TextInput
-                  
-                  mode="outlined"
-                  label="Resume"
-                  uppercase= "false"
-                  autoCapitalize='none'
-                  value={startDate.toLocaleDateString()}
-                  editable={false}
-                  pointerEvents="none"
-                  />
-              </TouchableOpacity>
-              <DateTimePickerModal
-                  isVisible={isDatePickerVisible}
-                  mode="date"
-                  onConfirm={handleConfirm}
-                  onCancel={hideDatePicker}
-                  date={startDate}
-                  display='default'
-              />
-          </View>
-
-          <View style={styles.dateInput}>
-              <TouchableOpacity onPress={()=>{
-                      showDatePickerEnd()
-                  }}>
-                  <TextInput
-                  
-                  mode="outlined"
-                  label="Resume"
-                  uppercase= "false"
-                  autoCapitalize='none'
-                  value={endDate.toLocaleDateString()}
-                  editable={false}
-                  pointerEvents="none"
-                  />
-              </TouchableOpacity>
-              <DateTimePickerModal
-                  isVisible={isDatePickerVisibleEnd}
-                  mode="date"
-                  onConfirm={handleConfirmEnd}
-                  onCancel={hideDatePickerEnd}
-                  date={endDate}
-                  display='default'
-              />
-          </View>  
-
-        </View>
-      </>
-    )
-
-
-  }
-    /** end of date picker */
  
   const [emailType, setEmailType] = React.useState(1); //change the type of mailbox the user sees
   const [filterEmail, setFilterEmail] = React.useState(); //filter emails by text (sender, subject, or body keyword)
  
   var arrayEmails = [];
   const {jobDoc} = useContext(JobStatusContext); //Al infor from JobStatus page (meant for relevant job email info)
+
+  // date filter variabals 
+  const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+  const [isDatePickerVisibleEnd, setDatePickerVisibilityEnd] = React.useState(false);
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
   
   async function signInWithGoogleAsync() {
     try {
@@ -227,10 +133,78 @@ function EmailScreen({ navigation }) {
             <Button title={"Sent"} onPress={() => setEmailType(3)}/>
           </View>
           <TextInput value={filterEmail} onChangeText={(filterEmail) => setFilterEmail(filterEmail)} placeholder={'Filter by...'} style={styles.input} />
+          {showDateFilters()}
           <Text style={{fontWeight:'bold', fontSize:16, padding:10}}>Mailbox: {type}</Text>
         </>
       );
     }
+  }
+
+  function showDateFilters() { //Date Picker function END
+    //Start Date Picker
+    const showDatePicker = () => {
+      setDatePickerVisibility(true);
+    };
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+    const handleConfirm = date => {
+        setStartDate(date);
+        hideDatePicker();
+    };
+    //End Date Picker
+    const showDatePickerEnd = () => {
+        setDatePickerVisibilityEnd(true);
+    };
+    const hideDatePickerEnd = () => {
+        setDatePickerVisibilityEnd(false);
+    };
+    const handleConfirmEnd = date => {
+        setEndDate(date);
+        hideDatePickerEnd();
+    };
+
+    return(
+      <>
+        <View style={styles.dateFilterContainer}>
+          <View style={styles.dateInput}>
+            <TouchableOpacity onPress={()=>{showDatePicker()}}>
+              <TextInput mode="outlined" label="Resume" uppercase= "false" autoCapitalize='none' value={startDate.toLocaleDateString()} editable={false} pointerEvents="none" />
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+              date={startDate}
+              display='default'
+            />
+          </View>
+          <View style={styles.dateInput}>
+            <TouchableOpacity onPress={()=>{showDatePickerEnd()}}>
+              <TextInput mode="outlined" label="Resume" uppercase= "false" autoCapitalize='none' value={endDate.toLocaleDateString()} editable={false} pointerEvents="none" />
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisibleEnd}
+              mode="date"
+              onConfirm={handleConfirmEnd}
+              onCancel={hideDatePickerEnd}
+              date={endDate}
+              display='default'
+            />
+          </View>
+        </View>
+      </>
+    )
+  }
+  //Date Picker function END
+
+  function removeTime(date) { //used to remove time from date fields
+    return new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
   }
  
   function showUserEmails() {
@@ -286,59 +260,42 @@ function EmailScreen({ navigation }) {
         let content = [];
         for (let i = 0; i < arrayEmails.length; i++) {
           const item = arrayEmails[i];
+
+          var tempDateStart = removeTime(startDate); //temp user select start date for comparing
+          var tempDateEnd = removeTime(endDate); //temp user select end date for comparing
+          var tempEmailDate = removeTime(new Date(item.date)); //temp date for comparing
          
           //Loop through all emails and set up each email message on the screen with all info
-          if(filterEmail == undefined || filterEmail.length == 0) { //filter by all emails
+          if(filterEmail == undefined || filterEmail.length == 0 && tempDateEnd - tempDateStart == 0) { //filter by all emails
             if(emailType == 2 || emailType == 3) { //if this is the application or sent mailbox (auto parse important stuff) (important info comes from an application company and position)
               for(var j = 0; j < jobDoc.length; j++) {
                 if(item.from.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].companyName.toLowerCase())) //if the company name exists in the email
                   content.push(<>
-                  <TouchableOpacity
-                    onPress={()=>onPressImportant()}>
-
-                    {flag && console.log("after : " + flag)}
-                    {!flag ? <Text><AntDesign name="staro" size={24} color="black" />
-                            </Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
-                  </TouchableOpacity>
-                  <Text key={item.id} style={styles.emailHeader}>Dates:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                    <TouchableOpacity
+                      onPress={()=>onPressImportant()}>{flag && console.log("after : " + flag)}{!flag ? <Text><AntDesign name="staro" size={24} color="black" /></Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
+                    </TouchableOpacity>
+                    <Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>
+                  );
                 else if(item.from.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].position.toLowerCase())) //if the position exists in the email
                   content.push(<>
-                  <TouchableOpacity
-                  onPress={()=>onPressImportant()}>
-
-                  {flag && console.log("after : " + flag)}
-                  {flag ? <Text><AntDesign name="staro" size={24} color="black" />
-                          </Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
-                  </TouchableOpacity>
-                  <Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                    <TouchableOpacity
+                      onPress={()=>onPressImportant()}>{flag && console.log("after : " + flag)}{!flag ? <Text><AntDesign name="staro" size={24} color="black" /></Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
+                    </TouchableOpacity>
+                    <Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>
+                  );
               }
             } else { //inbox mailbox (all emails)
               content.push(<>
-              <TouchableOpacity
-                onPress={()=>onPressImportant()}>
-
-                {flag && console.log("after : " + flag)}
-                {flag ? <Text><AntDesign name="staro" size={24} color="black" />
-                        </Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
-            </TouchableOpacity>
-              <Text key={item.id} style={styles.emailHeader}>
-                Date:
-                </Text>
-                <Text>{item.date}</Text>
-                <Text style={styles.emailHeader}>From:</Text>
-                <Text>{item.from}</Text>
-                <Text style={styles.emailHeader}>Subject:</Text>
-                <Text>{item.subject}</Text>
-                <Text style={styles.emailHeader}>Message:</Text>
-                <Text>{item.body}</Text><View style={styles.replyButtons}>
-                <Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} />
-                <Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} />
-                </View>
-                <Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                <TouchableOpacity
+                  onPress={()=>onPressImportant()}>{flag && console.log("after : " + flag)}{!flag ? <Text><AntDesign name="staro" size={24} color="black" /></Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
+                </TouchableOpacity>
+                <Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>
+              );
             }
-          } else { //filter by keyword
+          } else { //filter by keyword and/or date
             //loop through substring (no alpha caps letters) of from, subject, and body to search for keyword and use email if found
             var checkFilter = false;
+            var checkDateFilter = false;
             var tempFilterEmail = filterEmail.toLowerCase();
             var tempCompareFilter = "";
             for(var j = 0; j < 3; j++) { //'filter by' from, subject, and body
@@ -352,16 +309,37 @@ function EmailScreen({ navigation }) {
               if(tempCompareFilter.includes(tempFilterEmail)) //if 'filter by' is included in email
                 checkFilter = true;
             }
-            if(checkFilter) { //if passes the filter check
+
+            if(tempDateStart - tempEmailDate <= 0 && tempDateEnd - tempEmailDate >= 0) //'filter by' start date to end date (within)
+              checkDateFilter = true;
+            else if(tempDateEnd - tempDateStart == 0) //'filter by' all dates (no date filtering)
+              checkDateFilter = true;
+
+            if(checkFilter && checkDateFilter) { //if passes the filter check
               if(emailType == 2 || emailType == 3) { //if this is the application or sent mailbox (auto parse important stuff) (important info comes from an application company and position)
                 for(var j = 0; j < jobDoc.length; j++) {
                   if(item.from.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].companyName.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].companyName.toLowerCase())) //if the company name exists in the email
-                    content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                    content.push(<>
+                      <TouchableOpacity
+                        onPress={()=>onPressImportant()}>{flag && console.log("after : " + flag)}{!flag ? <Text><AntDesign name="staro" size={24} color="black" /></Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
+                      </TouchableOpacity>
+                      <Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>
+                    );
                   else if(item.from.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.subject.toLowerCase().includes(jobDoc[j].position.toLowerCase()) || item.body.toLowerCase().includes(jobDoc[j].position.toLowerCase())) //if the position exists in the email
-                    content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                    content.push(<>
+                      <TouchableOpacity
+                        onPress={()=>onPressImportant()}>{flag && console.log("after : " + flag)}{!flag ? <Text><AntDesign name="staro" size={24} color="black" /></Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
+                      </TouchableOpacity>
+                      <Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>
+                    );
                 }
               } else { //inbox mailbox (all emails)
-                content.push(<><Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
+                content.push(<>
+                  <TouchableOpacity
+                    onPress={()=>onPressImportant()}>{flag && console.log("after : " + flag)}{!flag ? <Text><AntDesign name="staro" size={24} color="black" /></Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
+                  </TouchableOpacity>
+                  <Text key={item.id} style={styles.emailHeader}>Date:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>
+                );
               }
             }
           }
@@ -422,13 +400,9 @@ function EmailScreen({ navigation }) {
           <Button title={accessToken ? "View Inbox" : "Sign in with Google"} onPress={accessToken ? getUserData : signInWithGoogleAsync} />
           {sendEmailButton()}
         </View>
-        <View>
         {showFilters()}
-        {showDateFilters()}
         {showUserEmails()}
         <Text>{'\n'}</Text>
-        </View>
-        
         {/* <StatusBar style="auto" />  */}
       </ScrollView>
     </SafeAreaView>
@@ -494,21 +468,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#e8e8e8'
   },
-
   dateInput: {
-    padding: 10,
-    // marginTop: 20,
-    // marginBottom: 10,
+    padding: 5,
     backgroundColor: '#e8e8e8',
     margin:10,
-    width:160,
+    width:160
   },
   dateFilterContainer: {
-      // justifyContent:'space-between',
-      flexDirection:'row',
-      alignContent:'space-between',
-      
-      
+    flexDirection:'row',
+    alignContent:'space-between',
+    paddingBottom:20
   },
   emailInfo: {
     alignItems: 'flex-start',
