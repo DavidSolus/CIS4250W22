@@ -35,7 +35,7 @@ const AppNavigator = () => {
               <FontAwesome5 name="user-graduate" color={color} size={size} />
             ),
           }} />
-        <Tab.Screen 
+        {/* <Tab.Screen 
         name="Date" 
         component={DateFilter}
         options={{
@@ -43,7 +43,7 @@ const AppNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-newspaper" color={color} size={size} />
           ),
-        }} />
+        }} /> */}
         <Tab.Screen 
           name="JobSearch" 
           component={JobSearchScreen}
