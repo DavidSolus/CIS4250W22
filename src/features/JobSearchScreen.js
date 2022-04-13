@@ -1,9 +1,25 @@
+// PLAN/TODO: 
+// Be able to search google for jobs
+// Be able to search other job API
+// 1. be able to search anything on google
+// 2. be able to search for key words on google (dropdown buttons etc)
+// 3. Be able to use the dropdown buttons to search other sites
+
 import React, { useCallback, useState, setState } from "react";
 import { Alert, Button, Linking, StyleSheet, View, TextInput } from "react-native";
 
 // Test Values
 const supportedURL = "https://google.com";
 const unsupportedURL = "slack://open?team=123456";
+const googleSearchURL = "http://google.com/search?q=";
+const indeedSearchURL = "https://ca.indeed.com/jobs?q=";
+const linkedInSearchURL = "https://www.linkedin.com/jobs/search?=keywords";
+
+const google = "google";
+const indeed = "indeed";
+const linkedin = "linkedin";
+const titlePlaceHolder = "   Job Title   "; //Spaces are deliberate
+const cityPlaceHolder = "   City   "; //Spaces are deliberate
 
 const OpenURLButton = ({ url, children }) => {
   const handlePress = useCallback(async () => {
@@ -24,25 +40,75 @@ const OpenURLButton = ({ url, children }) => {
 
 const SearchGoogleButton = ({}) => {
   const [textInputValue, setTextInputValue] = useState("");
+  const [cityInputValue, setCityInputValue] = useState("");
 
-  const onPress = (url) => {
-    alert(url);
+  const onPressThing = async (website)  => {
+    let url = "";
+    switch (website) {
+      case google:
+        url = googleSearchURL+textInputValue+" jobs";
+        if (cityInputValue != "") {
+          url += " near " + cityInputValue;
+        }
+        break;
+      case indeed:
+        url = indeedSearchURL+textInputValue;
+        if (cityInputValue != "") {
+          url += "&l=" + cityInputValue;
+        }
+        break;
+      case linkedin:
+        url = linkedInSearchURL+textInputValue;
+    }
+    console.log("......... TEST: " + website);
+    alert("Opening " + url);
+    await Linking.openURL(url);
   }
 
-  const onChangeText = (text) => {
+  // On Change
+  const onChangeTextTitle = (text) => {
     setTextInputValue(text);
+  }
+  const onChangeTextCity = (text) => {
+    setCityInputValue(text);
+  }
+
+  // On Press
+  const onPressGoogle = async () => {
+    onPressThing(google);
+  }
+  const onPressIndeed = async () => {
+    onPressThing(indeed);
+  }
+  const onPressLinkedIn = async () => {
+    onPressThing(linkedin);
   }
 
   return (
     <View>
       <Button
-        onPress={onPress}
+        onPress={onPressGoogle}
         title={"Search Google"}
+      />
+      <Button
+        onPress={onPressIndeed}
+        title={"Search Indeed"}
+      />
+      {/* <Button
+        onPress={onPressLinkedIn}
+        title={"Search LinkedIn"}
+      /> */}
+      <TextInput
+        style={{borderWidth:1}}
+        onChangeText={onChangeTextTitle}
+        value={textInputValue}
+        placeholder={titlePlaceHolder}
       />
       <TextInput
         style={{borderWidth:1}}
-        onChangeText={onChangeText}
-        value={textInputValue}
+        onChangeText={onChangeTextCity}
+        value={cityInputValue}
+        placeholder={cityPlaceHolder}
       />
     </View>
   );
@@ -55,8 +121,8 @@ const JobSearchScreen = () => {
     <View style={styles.container}>
       <SearchGoogleButton/>
       <></>
-      <OpenURLButton url={supportedURL}>Open Supported URL</OpenURLButton>
-      <OpenURLButton url={unsupportedURL}>Open Unsupported URL</OpenURLButton>
+      {/* <OpenURLButton url={supportedURL}>Open Supported URL</OpenURLButton>
+      <OpenURLButton url={unsupportedURL}>Open Unsupported URL</OpenURLButton> */}
     </View>
   );
 };
