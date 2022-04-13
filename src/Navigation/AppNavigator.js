@@ -11,6 +11,7 @@ import ResumeScreen from '../features/resume/ResumeScreen';
 import { EmailScreen } from '../screens/email';
 import JobStatusNavigator from './JobStatusNavigator';
 import ResumeContextProvider from '../contexts/ResumeContext';
+import DateFilter from '../features/DateFilter';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,15 +35,15 @@ const AppNavigator = () => {
               <FontAwesome5 name="user-graduate" color={color} size={size} />
             ),
           }} />
-        <Tab.Screen 
-        name="Resume" 
-        component={ResumeScreen}
+        {/* <Tab.Screen 
+        name="Date" 
+        component={DateFilter}
         options={{
-          tabBarLabel: 'Resume',
+          tabBarLabel: 'Date test',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-newspaper" color={color} size={size} />
           ),
-        }} />
+        }} /> */}
         <Tab.Screen 
           name="JobSearch" 
           component={JobSearchScreen}

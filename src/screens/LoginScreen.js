@@ -12,7 +12,7 @@ const LoginScreen = ({navigation}) => {
   return (
     <>
         <KeyboardAvoidingView
-            behavior='padding'
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             style = {styles.container}>
             <TextInput
                 label="Email"
