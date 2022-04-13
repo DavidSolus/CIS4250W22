@@ -297,7 +297,7 @@ function EmailScreen({ navigation }) {
                     onPress={()=>onPressImportant()}>
 
                     {flag && console.log("after : " + flag)}
-                    {flag ? <Text><AntDesign name="staro" size={24} color="black" />
+                    {!flag ? <Text><AntDesign name="staro" size={24} color="black" />
                             </Text> : <Text><AntDesign name="star" size={24} color="red" /></Text>}
                   </TouchableOpacity>
                   <Text key={item.id} style={styles.emailHeader}>Dates:</Text><Text>{item.date}</Text><Text style={styles.emailHeader}>From:</Text><Text>{item.from}</Text><Text style={styles.emailHeader}>Subject:</Text><Text>{item.subject}</Text><Text style={styles.emailHeader}>Message:</Text><Text>{item.body}</Text><View style={styles.replyButtons}><Button title={"Reply"} onPress={() => {setSendTo(getReplyEmailAddress(item.from)); setModalVisible(true)}} /><Button title={"Forward"} onPress={() => {setSendSubject("FW: " + item.subject); setSendBody(item.body); setModalVisible(true)}} /></View><Text style={{paddingTop:10, paddingBottom:15}}>_____________________________________________</Text></>);
