@@ -7,6 +7,7 @@ import * as MailComposer from 'expo-mail-composer';
 import { JobStatusContext } from '../contexts/JobStatusContext';
 import DateFilter from '../features/DateFilter';
 import { AntDesign } from '@expo/vector-icons';
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
  
  
 function EmailScreen({ navigation }) {
@@ -31,10 +32,105 @@ function EmailScreen({ navigation }) {
     console.log("from func :" +flag)
     
   }
+  function showDateFilters(){
+    // date filter variabals 
+    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+    const [isDatePickerVisibleEnd, setDatePickerVisibilityEnd] = React.useState(false);
+    const [startDate, setStartDate] = React.useState(new Date());
+    const [endDate, setEndDate] = React.useState(new Date());
 
-  // date filter variabals 
-  const [startDate, setStartDate] = React.useState();
-  const [endDate, setEndDate] = React.useState();
+    //date filter functions
+    //start date picker
+    const showDatePicker = () => {
+      setDatePickerVisibility(true);
+        
+    };
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = date => {
+        setStartDate(date)
+        hideDatePicker();
+        // setDatePickerVisibility(false)
+    };
+
+    //End Date Picker
+    const showDatePickerEnd = () => {
+        setDatePickerVisibilityEnd(true);
+        
+    };
+
+    const hideDatePickerEnd = () => {
+        setDatePickerVisibilityEnd(false);
+    };
+
+    const handleConfirmEnd = date => {
+        setEndDate(date)
+        hideDatePickerEnd();
+    };
+
+    return(
+      <>
+        <View style= {styles.dateFilterContainer}>
+
+          <View style={styles.dateInput}>
+              <TouchableOpacity onPress={()=>{
+                      showDatePicker()
+                  }}>
+                  <TextInput
+                  
+                  mode="outlined"
+                  label="Resume"
+                  uppercase= "false"
+                  autoCapitalize='none'
+                  value={startDate.toLocaleDateString()}
+                  editable={false}
+                  pointerEvents="none"
+                  />
+              </TouchableOpacity>
+              <DateTimePickerModal
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  onConfirm={handleConfirm}
+                  onCancel={hideDatePicker}
+                  date={startDate}
+                  display='default'
+              />
+          </View>
+
+          <View style={styles.dateInput}>
+              <TouchableOpacity onPress={()=>{
+                      showDatePickerEnd()
+                  }}>
+                  <TextInput
+                  
+                  mode="outlined"
+                  label="Resume"
+                  uppercase= "false"
+                  autoCapitalize='none'
+                  value={endDate.toLocaleDateString()}
+                  editable={false}
+                  pointerEvents="none"
+                  />
+              </TouchableOpacity>
+              <DateTimePickerModal
+                  isVisible={isDatePickerVisibleEnd}
+                  mode="date"
+                  onConfirm={handleConfirmEnd}
+                  onCancel={hideDatePickerEnd}
+                  date={endDate}
+                  display='default'
+              />
+          </View>  
+
+        </View>
+      </>
+    )
+
+
+  }
+    /** end of date picker */
  
   const [emailType, setEmailType] = React.useState(1); //change the type of mailbox the user sees
   const [filterEmail, setFilterEmail] = React.useState(); //filter emails by text (sender, subject, or body keyword)
@@ -326,9 +422,13 @@ function EmailScreen({ navigation }) {
           <Button title={accessToken ? "View Inbox" : "Sign in with Google"} onPress={accessToken ? getUserData : signInWithGoogleAsync} />
           {sendEmailButton()}
         </View>
+        <View>
         {showFilters()}
+        {showDateFilters()}
         {showUserEmails()}
         <Text>{'\n'}</Text>
+        </View>
+        
         {/* <StatusBar style="auto" />  */}
       </ScrollView>
     </SafeAreaView>
@@ -393,6 +493,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     backgroundColor: '#e8e8e8'
+  },
+
+  dateInput: {
+    padding: 10,
+    // marginTop: 20,
+    // marginBottom: 10,
+    backgroundColor: '#e8e8e8',
+    margin:10,
+    width:160,
+  },
+  dateFilterContainer: {
+      // justifyContent:'space-between',
+      flexDirection:'row',
+      alignContent:'space-between',
+      
+      
   },
   emailInfo: {
     alignItems: 'flex-start',

@@ -13,6 +13,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { JobStatusContext } from '../../contexts/JobStatusContext';
 
 
+
 const JobStatusScreen = ({navigation}) => {
 
   const {updateJobStatus,deleteJobStatus, jobDoc} = useContext(JobStatusContext)
