@@ -64,7 +64,7 @@ const JobStatusStatsScreen = ({navigation}) => {
       <Text style={styles.title}>1 - Apps Rejected: {jobDict["Reject"] / numApplication * 100}%</Text>
       <Text style={styles.title}>2 - Apps Interviews: {jobDict["Interview"] / numApplication * 100}%</Text>
       <Text style={styles.title}>3 - Apps Offer: {jobDict["Offer"] / numApplication * 100}%</Text>
-      <Text style={styles.title}>4 - Apps Interviews to Offers: {jobDict["Offer"] / jobDict["Interview"] * 100}%</Text>
+      <Text style={styles.title}>4 - Apps Interviews to Offers: {jobDict["Offer"] / (jobDict["Interview"] + jobDict["Offer"]) * 100}%</Text>
       <Text></Text>
     </View>
   );
